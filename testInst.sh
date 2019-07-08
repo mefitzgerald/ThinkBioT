@@ -4,6 +4,7 @@
 #
 # This script will install required software for testInst V1.
 # It is recommended to run it in your home directory.
+# sudo wget -O testInst.sh https://github.com/mefitzgerald/ThinkBioT/raw/master/testInst.sh
 #
 
 # check if sudo is used
@@ -45,6 +46,7 @@ if [ $ERR -eq 0 ]; then
 	unzip tbtzip.zip -d testInst || ((ERR++))
 	# move to directory files were unzipped to 
     cd testInst
+	echo '>>> in testInst'
 	# make start file executable
 	chmod +x tbtStart.py
 	# copy service unit file to systemd file
@@ -52,9 +54,9 @@ if [ $ERR -eq 0 ]; then
 	systemctl enable tbt.service
     sleep 2
 	# delete redundant files
-	rm tbt.service
-	cd ..
-	rm tbtzip.zip
+	#rm tbt.service
+	#cd ..
+	#rm tbtzip.zip
   fi
 fi
 
