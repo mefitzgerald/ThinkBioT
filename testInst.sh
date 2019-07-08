@@ -28,11 +28,33 @@ echo '==========================================================================
 # install ThinkBioT
 if [ $ERR -eq 0 ]; then
   echo '>>> Install test ThinkBioT'
+  #check if folder already exists
   if [ -d "testInst" ]; then
     echo 'Seems testInst is installed already, skip this step.'
   else
-
+  # check git is installed
+    if hash git 2>/dev/null; then
+		echo "Git is ready to go..."
+    else
+        echo "Git is missing, install it now..."
+        apt-get install -y git || ((ERR++))
+    fi
+	# get installtion files from github
+	wget https://github.com/mefitzgerald/ThinkBioT/raw/master/ThinkBioT/tbtzip.zip -O tbtzip.zip || ((ERR++))
+    # unzip files
+	unzip tbtzip.zip -d testInst || ((ERR++))
+	# move to directory files were unzipped to 
+    cd testInst
+	# make start file executable
+	chmod +x tbtStart.py
+	# copy service unit file to systemd file
+	cp tbt.service /lib/systemd/system/tbt.service
+	systemctl enable tbt.service
     sleep 2
+	# delete redundant files
+	rm tbt.service
+	cd ..
+	rm tbtzip.zip
   fi
 fi
 

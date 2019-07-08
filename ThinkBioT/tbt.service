@@ -3,7 +3,12 @@ Description=ThinkBioT start
 After=multi-user.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/pi/ThinkBioT/tbtStart.py
+ExecStart=/usr/bin/python3 -u tbtStart.py
+WorkingDirectory=/home/pi/testInst
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
 
 [Install]
 WantedBy=multi-user.target
