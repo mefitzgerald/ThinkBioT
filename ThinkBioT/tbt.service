@@ -1,5 +1,5 @@
 [Unit]
-Description=ThinkBioT start
+Description=ThinkBioT onBootStart
 After=multi-user.target
 
 [Service]
