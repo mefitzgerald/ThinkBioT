@@ -37,17 +37,29 @@ if [ $ERR -eq 0 ]; then
 	# delete service
 	rm /lib/systemd/system/tbt.service || ((ERR++))
   else
-    echo 'Seems tbt.service is uninstalled already, skip this step.'
+    echo 'tbt.service is uninstalled already, skip this step.'
   fi  
   
   cd ~ 
-  #check if ThinkBioT folder is deleted
-  if [ -d "ThinkBioT" ]; then
+  found= find -type d -name "ThinkBioT"
+  if [ -n "$found"]; then
+    # The variable 'found' contains the full path where "ThinkBioT" is.
+    # It may contain several lines if there are several folders named "ThinkBioT".\
+	echo 'ThinkBioT found & deleting'
+	echo $found
 	# delete ThinkBioT directory
 	rm -r ThinkBioT || ((ERR++))
   else
-    echo 'Seems ThinkBioT is uninstalled already, skip this step.'
+    echo 'ThinkBioT is uninstalled already, skip this step.'
   fi
+  
+  #check if ThinkBioT folder is deleted
+  #if [ -d "ThinkBioT" ]; then
+	# delete ThinkBioT directory
+	#rm -r ThinkBioT || ((ERR++))
+  #else
+    #echo 'ThinkBioT is uninstalled already, skip this step.'
+  #fi
 fi
 
 echo
