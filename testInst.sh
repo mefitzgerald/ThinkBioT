@@ -42,6 +42,7 @@ if [ $ERR -eq 0 ]; then
         echo "Git is missing, install it now..."
         apt-get install -y git || ((ERR++))
     fi
+	# apt-get install systemd-sysv
 	# get installtion files from github
 	wget https://github.com/mefitzgerald/ThinkBioT/raw/master/ThinkBioT/tbtzip.zip -O tbtzip.zip || ((ERR++))
     # unzip files
