@@ -15,9 +15,6 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
-# target directory
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/ThinkBioT"
-
 # error counter
 ERR=0
 
@@ -32,10 +29,8 @@ echo '==========================================================================
 if [ $ERR -eq 0 ]; then
   echo '>>> Uninstall ThinkBioT'
   #check if folder is deleted
-  if [! -d "ThinkBioT" ]; then
-    echo 'Seems ThinkBioT is uninstalled already, skip this step.'
-  else
-  	cd ~
+  if [ -d "ThinkBioT" ]; then
+	cd ~
 	# stop tbt service
 	systemctl stop tbt.service || ((ERR++))
 	sleep 5
@@ -43,6 +38,8 @@ if [ $ERR -eq 0 ]; then
 	rm /lib/systemd/system/tbt.service || ((ERR++))
 	# delete ThinkBioT directory
 	rm -r ThinkBioT || ((ERR++))
+  else
+    echo 'Seems ThinkBioT is uninstalled already, skip this step.'
   fi
 fi
 
