@@ -16,6 +16,8 @@ fi
 # target directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/testInst"
 
+pwd
+
 # error counter
 ERR=0
 
@@ -52,11 +54,13 @@ if [ $ERR -eq 0 ]; then
 	# copy service unit file to systemd file
 	cp tbt.service /lib/systemd/system/tbt.service
 	systemctl enable tbt.service
+	cd ..
+	chown -R pi:pi testInst
     sleep 2
 	# delete redundant files
 	#rm tbt.service
 	#cd ..
-	#rm tbtzip.zip
+	rm tbtzip.zip
   fi
 fi
 
