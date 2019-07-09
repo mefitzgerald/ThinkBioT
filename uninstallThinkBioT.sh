@@ -27,15 +27,22 @@ echo '==========================================================================
 
 # Uninstall ThinkBioT
 if [ $ERR -eq 0 ]; then
-  echo '>>> Uninstall ThinkBioT'
-  #check if folder is deleted
-  if [ -d "ThinkBioT" ]; then
-	cd ~
+  echo '>>> Uninstall ThinkBioT Unit'
+  #check if unit is already removed
+  if [ -e "tbt.service" ]; then
 	# stop tbt service
 	systemctl stop tbt.service || ((ERR++))
+	systemctl daemon-reload || ((ERR++))
 	sleep 5
 	# delete service
 	rm /lib/systemd/system/tbt.service || ((ERR++))
+  else
+    echo 'Seems tbt.service is uninstalled already, skip this step.'
+  fi  
+  
+  cd ~ 
+  #check if ThinkBioT folder is deleted
+  if [ -d "ThinkBioT" ]; then
 	# delete ThinkBioT directory
 	rm -r ThinkBioT || ((ERR++))
   else
