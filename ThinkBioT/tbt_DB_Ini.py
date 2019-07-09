@@ -2,10 +2,10 @@ import sqlite3
 
 ############### Settings ####################
 #DB Name
-DB_NAME = "tbt_database"
+DB_NAME = "./ThinkBioT/tbt_database"
 
 #SQL File with Table Schema and Initialization Data
-SQL_File_Name = "tbt_dbSchema.sql"
+SQL_File_Name = "./ThinkBioT/tbt_dbSchema.sql"
 ##############################################
 
 #Read Table Schema into a Variable and remove all New Line Chars
