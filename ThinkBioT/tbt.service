@@ -3,11 +3,12 @@ Description=ThinkBioT start
 After=multi-user.target
 
 [Service]
+Type=oneshot
+RemainAfterExit=yes
 ExecStart=/usr/bin/python3 -u tbtStart.py
 WorkingDirectory=/home/pi/testInst
 StandardOutput=inherit
 StandardError=inherit
-Restart=always
 User=pi
 
 [Install]

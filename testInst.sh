@@ -53,13 +53,15 @@ if [ $ERR -eq 0 ]; then
 	chmod +x tbtStart.py
 	# copy service unit file to systemd file
 	cp tbt.service /lib/systemd/system/tbt.service
+	# enable service to be started next boot
 	systemctl enable tbt.service
+	#delete tbt.service from testInst
+	rm tbt.service
 	cd ..
+	# set ownership of testInst to pi
 	chown -R pi:pi testInst
     sleep 2
-	# delete redundant files
-	#rm tbt.service
-	#cd ..
+	# delete redundant zip file
 	rm tbtzip.zip
   fi
 fi
