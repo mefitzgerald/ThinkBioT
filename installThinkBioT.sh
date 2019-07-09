@@ -5,7 +5,7 @@
 # This script will install required software for testInst V1.
 # It is recommended to run it in your home directory.
 # Command to download file;
-# sudo wget -O testInst.sh https://github.com/mefitzgerald/ThinkBioT/raw/master/installThinkBioT.sh
+# sudo wget -O installThinkBioT.sh https://github.com/mefitzgerald/ThinkBioT/raw/master/installThinkBioT.sh
 # Command to run file
 # sudo sh installThinkBioT.sh
 
@@ -51,7 +51,7 @@ if [ $ERR -eq 0 ]; then
     cd ThinkBioT
 	# make start file & database creation files executable
 	chmod +x tbtStart.py
-	chmod +x DB_Ini.py
+	chmod +x tbt_DB_Ini.py
 	
 	# copy service unit file to systemd file
 	cp tbt.service /lib/systemd/system/tbt.service
@@ -61,7 +61,7 @@ if [ $ERR -eq 0 ]; then
 	rm tbt.service
 	
 	#setup sqlite database
-	python3 ./ThinkBioT/tbt_DB_Ini.py
+	python3 tbt_DB_Ini.py
 	
 	cd ..
 	# set ownership of ThinkBioT to pi
