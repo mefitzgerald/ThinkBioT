@@ -39,27 +39,20 @@ if [ $ERR -eq 0 ]; then
   else
     echo 'tbt.service is uninstalled already, skip this step.'
   fi  
-  
+  echo '>>> Uninstall ThinkBioT Directory'
   cd ~ 
   found= find -type d -name "ThinkBioT"
   if [ -n "$found"]; then
-    # The variable 'found' contains the full path where "ThinkBioT" is.
-    # It may contain several lines if there are several folders named "ThinkBioT".\
 	echo 'ThinkBioT found & deleting'
-	echo $found
+	# delete all the files in ThinkBioT
+	cd ThinkBioT
+	rm -rf * || ((ERR++))
+	cd ~
 	# delete ThinkBioT directory
-	rm -r ThinkBioT || ((ERR++))
+	rmdir ThinkBioT || ((ERR++))
   else
     echo 'ThinkBioT is uninstalled already, skip this step.'
   fi
-  
-  #check if ThinkBioT folder is deleted
-  #if [ -d "ThinkBioT" ]; then
-	# delete ThinkBioT directory
-	#rm -r ThinkBioT || ((ERR++))
-  #else
-    #echo 'ThinkBioT is uninstalled already, skip this step.'
-  #fi
 fi
 
 echo
