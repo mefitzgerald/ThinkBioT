@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS TaskSession (
  TestLong TEXT,
  TestLat TEXT,
  TestElevation TEXT,
- TransmittedTime TEXT
+ TransmittedTime TEXT,
+ SettingID INTEGER,
  FOREIGN KEY (SettingID) REFERENCES Settings(SettingID)
 );
 

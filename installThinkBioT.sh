@@ -51,8 +51,7 @@ if [ $ERR -eq 0 ]; then
     cd ThinkBioT
 	# make start file & database creation files executable
 	chmod +x tbtStart.py
-	chmod +x tbt_DB_Ini.py
-	
+	chmod +x tbt_DB_Ini.py	
 	# copy service unit file to systemd file
 	cp tbt.service /lib/systemd/system/tbt.service
 	# enable service to be started next boot
@@ -62,6 +61,9 @@ if [ $ERR -eq 0 ]; then
 	
 	#setup sqlite database
 	python3 tbt_DB_Ini.py
+	sleep 1
+	rm tbt_DB_Ini.py
+	rm tbt_dbSchema.sql
 	
 	# Install packages
 		PACKAGES="sox python-pip"
