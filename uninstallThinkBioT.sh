@@ -29,10 +29,12 @@ echo '==========================================================================
 if [ $ERR -eq 0 ]; then
   echo '>>> Uninstall ThinkBioT Unit'
   #check if unit is already removed
-  if [ -e "tbt.service" ]; then
+  serviceFound= find -type f -name "tbt.service"
+  if [ -n "$serviceFound"]; then
+	echo 'tbt.service found, stopping & deleting'
 	# stop tbt service
-	systemctl stop tbt.service || ((ERR++))
-	systemctl daemon-reload || ((ERR++))
+	sudo systemctl stop tbt.service || ((ERR++))
+	sudo systemctl daemon-reload || ((ERR++))
 	sleep 5
 	# delete service
 	rm /lib/systemd/system/tbt.service || ((ERR++))
@@ -40,15 +42,16 @@ if [ $ERR -eq 0 ]; then
     echo 'tbt.service is uninstalled already, skip this step.'
   fi  
   echo '>>> Uninstall ThinkBioT Directory'
-  cd ~ 
+  cd ThinkBioT
   rm -rf ThinkBioT
+  cd ~
 ###
 fi
 
 # Uninstall packaged dependencies
-apt-get remove --purge sox python-pip -y ((ERR++))
-apt-get autoremove -y ((ERR++))
-sudo apt-get autoclean ((ERR++))
+#apt-get remove --purge sox python-pip -y ((ERR++))
+#apt-get autoremove -y ((ERR++))
+#sudo apt-get autoclean ((ERR++))
 
 echo
 if [ $ERR -eq 0 ]; then
