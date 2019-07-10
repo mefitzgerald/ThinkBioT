@@ -5,7 +5,7 @@
 # This script will install required software for testInst V1.
 # It is recommended to run it in your home directory.
 # Command to download file;
-# sudo wget -O uninstallThinkBioT.sh https://github.com/mefitzgerald/ThinkBioT/raw/master/uninstallThinkBioT.sh
+# sudo wget -O uninstallThinkBioT.sh https://github.com/mefitzgerald/ThinkBioT/raw/master/ThinkBioT/uninstallThinkBioT.sh
 # Command to run file
 # sudo sh uninstallThinkBioT.sh
 
