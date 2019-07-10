@@ -30,7 +30,7 @@ echo '==========================================================================
 
 # install ThinkBioT
 if [ $ERR -eq 0 ]; then
-  echo '>>> Install test ThinkBioT'
+  echo '>>> Install ThinkBioT'
   #check if folder already exists
   if [ -d "ThinkBioT" ]; then
     echo 'Seems ThinkBioT is installed already, skip this step.'
@@ -54,10 +54,9 @@ if [ $ERR -eq 0 ]; then
 	chmod +x tbt_DB_Ini.py	
 	# copy service unit file to systemd file
 	cp tbt.service /lib/systemd/system/tbt.service
+	echo '>>> enable service'
 	# enable service to be started next boot
 	systemctl enable tbt.service
-	#delete tbt.service from ThinkBioT
-	rm tbt.service
 	
 	#setup sqlite database
 	python3 tbt_DB_Ini.py
