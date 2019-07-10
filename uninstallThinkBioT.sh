@@ -18,11 +18,11 @@ fi
 # error counter
 ERR=0
 
-echo '================================================================================'
-echo '|                                                                              |'
-echo '|             ThinkBioT Software Uninstall Script                           |'
-echo '|                                                                              |'
-echo '================================================================================'
+echo '========================================================================='
+echo '|                                                                       |'
+echo '|             ThinkBioT Software Uninstall Script                       |'
+echo '|                                                                       |'
+echo '========================================================================='
 
 
 # Uninstall ThinkBioT
@@ -33,8 +33,8 @@ if [ $ERR -eq 0 ]; then
   if [ -n "$serviceFound"]; then
 	echo 'tbt.service found, stopping & deleting'
 	# stop tbt service
-	sudo systemctl stop tbt.service || ((ERR++))
-	sudo systemctl daemon-reload || ((ERR++))
+	systemctl stop tbt.service || ((ERR++))
+	systemctl daemon-reload || ((ERR++))
 	sleep 5
 	# delete service
 	rm /lib/systemd/system/tbt.service || ((ERR++))
@@ -42,16 +42,24 @@ if [ $ERR -eq 0 ]; then
     echo 'tbt.service is uninstalled already, skip this step.'
   fi  
   echo '>>> Uninstall ThinkBioT Directory'
-  cd ThinkBioT
-  rm -rf ThinkBioT
   cd ~
+  found= find -type d -name "ThinkBioT"
+  if [ -n "$found"]; then
+	echo 'ThinkBioT found & deleting'
+	# delete all the files in ThinkBioT
+	cd ThinkBioT
+	rm -rf * || ((ERR++))
+	cd ~
+	# delete ThinkBioT directory
+	rmdir ThinkBioT || ((ERR++))
+  else
+    echo 'ThinkBioT is uninstalled already, skip this step.'
+  fi
 ###
+  echo '>>> Uninstall ThinkBioT Database'
+  cd ~
+  rm tbt_database
 fi
-
-# Uninstall packaged dependencies
-#apt-get remove --purge sox python-pip -y ((ERR++))
-#apt-get autoremove -y ((ERR++))
-#sudo apt-get autoclean ((ERR++))
 
 echo
 if [ $ERR -eq 0 ]; then

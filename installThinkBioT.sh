@@ -67,8 +67,6 @@ if [ $ERR -eq 0 ]; then
 	
 	# Install packages
 		PACKAGES="sox python-pip"
-		apt-get update || ((ERR++))
-		apt-get upgrade -y || ((ERR++))
 		apt-get install $PACKAGES -y || ((ERR++))
 	
 	cd ..
