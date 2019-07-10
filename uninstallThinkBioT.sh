@@ -41,19 +41,14 @@ if [ $ERR -eq 0 ]; then
   fi  
   echo '>>> Uninstall ThinkBioT Directory'
   cd ~ 
-  found= find -type d -name "ThinkBioT"
-  if [ -n "$found"]; then
-	echo 'ThinkBioT found & deleting'
-	# delete all the files in ThinkBioT
-	cd ThinkBioT
-	rm -rf * || ((ERR++))
-	cd ~
-	# delete ThinkBioT directory
-	rmdir ThinkBioT || ((ERR++))
-  else
-    echo 'ThinkBioT is uninstalled already, skip this step.'
-  fi
+  rm -rf ThinkBioT
+###
 fi
+
+# Uninstall packaged dependencies
+apt-get remove --purge sox python-pip -y ((ERR++))
+apt-get autoremove -y ((ERR++))
+sudo apt-get autoclean ((ERR++))
 
 echo
 if [ $ERR -eq 0 ]; then

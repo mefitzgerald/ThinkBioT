@@ -35,7 +35,7 @@ if [ $ERR -eq 0 ]; then
   if [ -d "ThinkBioT" ]; then
     echo 'Seems ThinkBioT is installed already, skip this step.'
   else
-  # check git is installed
+	# check git is installed
     if hash git 2>/dev/null; then
 		echo "Git is ready to go..."
     else
@@ -62,6 +62,12 @@ if [ $ERR -eq 0 ]; then
 	
 	#setup sqlite database
 	python3 tbt_DB_Ini.py
+	
+	# Install packages
+		PACKAGES="sox python-pip"
+		apt-get update || ((ERR++))
+		apt-get upgrade -y || ((ERR++))
+		apt-get install $PACKAGES -y || ((ERR++))
 	
 	cd ..
 	# set ownership of ThinkBioT to pi

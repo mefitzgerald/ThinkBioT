@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS TaskSession (
  TestLat TEXT,
  TestElevation TEXT,
  TransmittedTime TEXT
+ FOREIGN KEY (SettingID) REFERENCES Settings(SettingID)
 );
 
 CREATE TABLE IF NOT EXISTS ClassTasks (
@@ -32,10 +33,15 @@ CREATE TABLE IF NOT EXISTS Settings (
  SettingActive INTEGER,
  AcIndexCaptureTime TEXT,
  ClassificationCaptureTime TEXT,
- ProcessingTaskTime TEXT
+ ProcessingTaskTime TEXT,
+ CurrentMode INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS RunMode (
- ModeID INTEGER PRIMARY KEY AUTOINCREMENT,
- ModeName TEXT
-);
+INSERT INTO Settings (SettingName, SettingActive, AcIndexCaptureTime, ClassificationCaptureTime, ProcessingTaskTime, CurrentMode) 
+VALUES ("DEFAULT", 1, NULL, NULL, NULL, 0);
+
+
+
+
+
+
