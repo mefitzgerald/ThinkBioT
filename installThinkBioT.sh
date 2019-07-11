@@ -52,12 +52,13 @@ if [ $ERR -eq 0 ]; then
 	# make start file & database creation files executable
 	chmod +x tbtStart.py || ((ERR++))
 	chmod +x tbt_DB_Ini.py	|| ((ERR++))
+	echo '>>> set soundBlaster as default audio device'
 	# move .asoundrc audio settings file to home
-	mv -i .asoundrc ~
+	mv -i .asoundrc ~  || ((ERR++))
 	# move asound configuration file
-	mv -i .asound.conf /etc/asound.conf
+	mv -i asound.conf /etc/asound.conf || ((ERR++))
 	# move service unit file to systemd file (-i confirms before over writing)
-	mv -i tbt.service /lib/systemd/system/tbt.service
+	mv -i tbt.service /lib/systemd/system/tbt.service || ((ERR++))
 	echo '>>> enable service'
 	# enable service to be started next boot
 	systemctl enable tbt.service || ((ERR++))
@@ -68,7 +69,6 @@ if [ $ERR -eq 0 ]; then
 	sleep 1
 	rm tbt_DB_Ini.py
 	rm tbt_dbSchema.sql
-	rm tbt.service
 	
 	# Install packages
 	echo '>>> Install dependencies'
