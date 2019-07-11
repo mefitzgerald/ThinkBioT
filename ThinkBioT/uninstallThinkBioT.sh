@@ -41,6 +41,7 @@ if [ $ERR -eq 0 ]; then
   else
     echo 'tbt.service is uninstalled already, skip this step.'
   fi  
+  
   echo '>>> Uninstall ThinkBioT Directory'
   cd ~
   found= find -type d -name "ThinkBioT"
@@ -55,11 +56,15 @@ if [ $ERR -eq 0 ]; then
   else
     echo 'ThinkBioT is uninstalled already, skip this step.'
   fi
-###
+  
   echo '>>> Uninstall ThinkBioT Database'
   cd ~
   rm tbt_database
+  
+  echo '>>> Re-install removed packages'
+  
 fi
+
 
 echo
 if [ $ERR -eq 0 ]; then

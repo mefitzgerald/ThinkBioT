@@ -50,26 +50,36 @@ if [ $ERR -eq 0 ]; then
 	# move to directory files were unzipped to 
     cd ThinkBioT
 	# make start file & database creation files executable
-	chmod +x tbtStart.py
-	chmod +x tbt_DB_Ini.py	
-	# copy service unit file to systemd file
-	cp tbt.service /lib/systemd/system/tbt.service
+	chmod +x tbtStart.py || ((ERR++))
+	chmod +x tbt_DB_Ini.py	|| ((ERR++))
+	# move .asoundrc audio settings file to home
+	mv -i .asoundrc ~
+	# move asound configuration file
+	mv -i .asound.conf /etc/asound.conf
+	# move service unit file to systemd file (-i confirms before over writing)
+	mv -i tbt.service /lib/systemd/system/tbt.service
 	echo '>>> enable service'
 	# enable service to be started next boot
-	systemctl enable tbt.service
+	systemctl enable tbt.service || ((ERR++))
 	
 	#setup sqlite database
+	echo '>>> create ThinkBioT database'
 	python3 tbt_DB_Ini.py
 	sleep 1
 	rm tbt_DB_Ini.py
 	rm tbt_dbSchema.sql
+	rm tbt.service
 	
 	# Install packages
-		PACKAGES="sox python-pip"
-		apt-get install $PACKAGES -y || ((ERR++))
+	echo '>>> Install dependencies'
+	PACKAGES="sox python-pip"
+	apt-get install $PACKAGES -y || ((ERR++))
 	
-	cd ..
+	# Remove audio packages that interfere with ALSA 
+	
+	
 	# set ownership of ThinkBioT to pi
+	cd ..
 	chown -R pi:pi ThinkBioT
     sleep 2
 	# delete redundant zip file
