@@ -49,9 +49,13 @@ if [ $ERR -eq 0 ]; then
 	unzip tbtzip.zip -d ThinkBioT || ((ERR++))
 	# move to directory files were unzipped to 
     cd ThinkBioT
-	# make start file & database creation files executable
+	#create required directories
+	mkdir ClassAudioFiles
+	mkdir AcIndexAudioFiles
+	# make files executable
 	chmod +x tbtStart.py || ((ERR++))
 	chmod +x tbt_DB_Ini.py	|| ((ERR++))
+	chmod +x trigRecorder.sh || ((ERR++))
 	echo '>>> set soundBlaster as default audio device'
 	# move .asoundrc audio settings file to home
 	mv -i .asoundrc ~  || ((ERR++))

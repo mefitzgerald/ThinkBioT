@@ -34,12 +34,17 @@ CREATE TABLE IF NOT EXISTS Settings (
  SettingActive INTEGER,
  AcIndexCaptureTime TEXT,
  ClassificationCaptureTime TEXT,
+ Tr_Sil_dur REAL,
+ Tr_Sil_dur_perc INTEGER,
+ Tr_Sil_below_dur REAL,
+ Tr_Sil_below_dur_perc INTEGER,
+ Tr_Hpfilter INTEGER,
  ProcessingTaskTime TEXT,
  CurrentMode INTEGER
 );
 
-INSERT INTO Settings (SettingName, SettingActive, AcIndexCaptureTime, ClassificationCaptureTime, ProcessingTaskTime, CurrentMode) 
-VALUES ("DEFAULT", 1, NULL, NULL, NULL, 0);
+INSERT INTO Settings (SettingName, SettingActive, AcIndexCaptureTime, ClassificationCaptureTime, Tr_Sil_dur, Tr_Sil_dur_perc, Tr_Sil_below_dur, Tr_Sil_below_dur_perc, Tr_Hpfilter, ProcessingTaskTime, CurrentMode) 
+VALUES ("DEFAULT", 1, NULL, NULL, 0.1, 1, 1.0, 1, 80, NULL, 0);
 
 
 
