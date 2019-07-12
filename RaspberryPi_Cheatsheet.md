@@ -30,7 +30,9 @@ View Audio Hardware `cat /proc/asound/cards`
 
 View information on selected card (use Audio Hardware query to get card no) `amixer -c <card index no>`
 
+View Recording devices `arecord -l`
 
+View Playback devices `aplay -l`
 
 
 ### Setup
