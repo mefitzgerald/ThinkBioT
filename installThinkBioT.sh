@@ -67,20 +67,17 @@ if [ $ERR -eq 0 ]; then
 	# enable service to be started next boot
 	systemctl enable tbt.service || ((ERR++))
 	
+	# Install packages
+	echo '>>> Install dependencies'
+	PACKAGES="sox python-pip sqlite3"
+	apt-get install $PACKAGES -y || ((ERR++))
+	
 	#setup sqlite database
 	echo '>>> create ThinkBioT database'
 	python3 tbt_DB_Ini.py
 	sleep 1
 	rm tbt_DB_Ini.py
 	rm tbt_dbSchema.sql
-	
-	# Install packages
-	echo '>>> Install dependencies'
-	PACKAGES="sox python-pip"
-	apt-get install $PACKAGES -y || ((ERR++))
-	
-	# Remove audio packages that interfere with ALSA 
-	
 	
 	# set ownership of ThinkBioT to pi
 	cd ..

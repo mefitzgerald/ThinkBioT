@@ -2,11 +2,8 @@
 #!/bin/bash
 # file: uninstallThinkBioT.sh
 #
-# This script will install required software for testInst V1.
+# This script will uninstall ThinkBioT
 # It is recommended to run it in your home directory.
-# Command to download file;
-# sudo wget -O uninstallThinkBioT.sh https://github.com/mefitzgerald/ThinkBioT/raw/master/ThinkBioT/uninstallThinkBioT.sh
-# Command to run file
 # sudo sh uninstallThinkBioT.sh
 
 # check if sudo is used
@@ -47,12 +44,8 @@ if [ $ERR -eq 0 ]; then
   found= find -type d -name "ThinkBioT"
   if [ -n "$found"]; then
 	echo 'ThinkBioT found & deleting'
-	# delete all the files in ThinkBioT
-	cd ThinkBioT
-	rm -rf * || ((ERR++))
-	cd ~
 	# delete ThinkBioT directory
-	rmdir ThinkBioT || ((ERR++))
+	rm -r /home/pi/ThinkBioT || ((ERR++))
   else
     echo 'ThinkBioT is uninstalled already, skip this step.'
   fi
@@ -61,8 +54,13 @@ if [ $ERR -eq 0 ]; then
   cd ~
   rm tbt_database
   
-  echo '>>> Re-install removed packages'
+  echo '>>> Uninstall Alsa audio configuration files'
+  # delete files
+  rm /etc/asound.conf || ((ERR++))
+  rm /home/pi/.asoundrc || ((ERR++))
   
+  echo '>>> Restore Audio Default settings'
+  alsactl init
 fi
 
 
