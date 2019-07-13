@@ -122,7 +122,7 @@ if [ $ERR -eq 0 ]; then
 	mkdir /home/pi/ThinkBioT/ClassProcess/CAudioIn	
 	
 	# set ownership of ThinkBioT to pi
-	cd ~
+	cd /home/pi
 	chown -R pi:pi ThinkBioT
     sleep 2
 	# delete redundant zip file
