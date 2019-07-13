@@ -1,4 +1,4 @@
-# Raspberry Pi
+# Raspberry Pi Debian Quick reference
 
 
 ## Internet
@@ -20,7 +20,16 @@ Reboot system: `sudo reboot`
 
 Shutdown: `sudo shutdown -h now`
 
-Update system: `sudo apt-get update` & `sudo apt-get upgrade`
+Update system & packages: `sudo apt-get update` & `sudo apt-get upgrade`
+
+Uninstall package (will remove about everything regarding the package packagename, 
+but not the dependencies installed with it on installation): `sudo apt-get purge packagename`
+
+Uninstall orphaned packaged dependencies(will also attempt to remove other packages
+which were required by packagename on but are not required by 
+any remaining packages): `sudo aptitude purge packagename`
+
+Remove orphaned packages: `sudo apt-get autoremove`
 
 ## Audio
 
