@@ -82,7 +82,7 @@ if [ $ERR -eq 0 ]; then
 	
 	# Install rasbian packages
 	echo '>>> Install dependencies'
-	PACKAGES="sox sqlite3 python-scipy python-numpy python-matlplotlib git"
+	PACKAGES="sox sqlite3 python-scipy python-numpy python-matplotlib git"
 	apt-get install $PACKAGES -y || ((ERR++))
 	
 	# Install Python packages
@@ -94,13 +94,6 @@ if [ $ERR -eq 0 ]; then
 	sleep 1
 	rm tbt_DB_Ini.py
 	rm tbt_dbSchema.sql
-	
-	# set ownership of ThinkBioT to pi
-	cd ..
-	chown -R pi:pi ThinkBioT
-    sleep 2
-	# delete redundant zip file
-	rm tbtzip.zip
 	
 	echo '>>> Create Index calculation files'
 	# move files for index calculation
@@ -127,6 +120,14 @@ if [ $ERR -eq 0 ]; then
 	cd /home/pi/ThinkBioT
 	mkdir /home/pi/ThinkBioT/ClassProcess
 	mkdir /home/pi/ThinkBioT/ClassProcess/CAudioIn	
+	
+	# set ownership of ThinkBioT to pi
+	cd ~
+	chown -R pi:pi ThinkBioT
+    sleep 2
+	# delete redundant zip file
+	rm tbtzip.zip
+	
   fi
 fi
 
