@@ -5,7 +5,7 @@ After=multi-user.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/python3 -u tbtStart.py
+ExecStart=/usr/bin/python3 -u tbt_Start.py
 WorkingDirectory=/home/pi/ThinkBioT
 StandardOutput=inherit
 StandardError=inherit
