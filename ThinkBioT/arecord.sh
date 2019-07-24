@@ -25,20 +25,10 @@
 
 cd ~/ThinkBioT/ClassProcess/CAudioIn
 
+#get recording requirements from Settings db
 cmd="SELECT * FROM Settings WHERE SettingActive = 1"
 IFS=$'|'
 TBT=(`sqlite3 ~/tbt_database "$cmd"`)
 
-Tr_Sil_dur="${TBT[5]}"
-# echo $Tr_Sil_dur
-Tr_Sil_dur_perc="${TBT[6]}"
-# echo $Tr_Sil_dur_perc
-Tr_Sil_below_dur="${TBT[7]}"
-# echo $Tr_Sil_below_dur
-Tr_Sil_below_dur_perc="${TBT[8]}"
-# echo $Tr_Sil_below_dur_perc
-Tr_Hpfilter="${TBT[9]}"
-# echo $Tr_Hpfilter
-
 # timeout loops for 10 seconds
-timeout 10 rec -c1 -r 48000 record.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart
+timeout 10 rec -c1 -r 48000 record.wav sinc silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart

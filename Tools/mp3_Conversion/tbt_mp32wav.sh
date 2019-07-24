@@ -1,6 +1,4 @@
-[ -z $BASH ] && { exec bash "$0" "$@" || exit; } 
 #!/bin/bash
-# to run use ./trecord.sh or sh ./trecord.sh or bash ./trecord.sh
 
 # LICENSE:
 # ThinkBioT is an Bioacoustic sensor framework for the collection, processing
@@ -23,22 +21,23 @@
 # SUPPORT:
 # https://github.com/mefitzgerald/ThinkBioT/issues
 
-cd ~/ThinkBioT/ClassProcess/CAudioIn
+#make directory for converted files
+mkdir -p converted
 
-cmd="SELECT * FROM Settings WHERE SettingActive = 1"
-IFS=$'|'
-TBT=(`sqlite3 ~/tbt_database "$cmd"`)
-
-Tr_Sil_dur="${TBT[5]}"
-# echo $Tr_Sil_dur
-Tr_Sil_dur_perc="${TBT[6]}"
-# echo $Tr_Sil_dur_perc
-Tr_Sil_below_dur="${TBT[7]}"
-# echo $Tr_Sil_below_dur
-Tr_Sil_below_dur_perc="${TBT[8]}"
-# echo $Tr_Sil_below_dur_perc
-Tr_Hpfilter="${TBT[9]}"
-# echo $Tr_Hpfilter
-
-# timeout loops for 10 seconds
-timeout 10 rec -c1 -r 48000 record.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart
+#loop through all files to be converted 
+for i in *.mp3
+do
+	var1=$(exiftool -Title -charset UTF8  $i)
+	#remove title
+	secondString=""
+	var2=${var1/Title : /$secondString}
+	echo $var2
+	#remove formal name
+	dirname=${var2%%(*} 
+	echo $dirname
+	#echo tmp=${dirname%%(*}
+	#make directory for converted file class (if not exists)
+	mkdir -p "$dirname"
+	
+    sox "$i" "converted/$(basename -s .mp3 '$i').wav"
+done

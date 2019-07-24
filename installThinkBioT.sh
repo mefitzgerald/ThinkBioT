@@ -1,4 +1,4 @@
-[ -z $BASH ] && { exec bash "$0" "$@" || exit; }
+[ -z $BASH ] && { exec bash "$0" "$@" || exit; } 
 #!/bin/bash
 # file: installThinkBioT.sh
 # sudo wget -O installThinkBioT.sh https://github.com/mefitzgerald/ThinkBioT/raw/master/installThinkBioT.sh
@@ -57,7 +57,23 @@ if [ $ERR -eq 0 ]; then
     echo 'ThinkBioT is installed already, skip this step.'
   else
 	echo '>>> Begin ThinkBioT Installation'
-	# get installtion files from github
+	
+	#ensure installtion in home directory
+	cd ~
+	
+	# Install rasbian packages
+	echo '>>> Install dependencies'
+	PACKAGES="git sox sqlite3 python-scipy=0.18.1-2 python-numpy=1:1.12.1-3 python-matplotlib git screen usbutils"
+	apt-get install $PACKAGES -y || ((ERR++))
+	
+	# Install Python packages
+	pip install pyyaml==5.1.1
+	pip install pyserial
+	
+	# get RockBlock files
+	git clone https://github.com/MakerSnake/pyRockBlock
+	
+	# get ThinkBioT install files
 	wget https://github.com/mefitzgerald/ThinkBioT/raw/master/ThinkBioT/tbtzip.zip -O tbtzip.zip || ((ERR++))
     # unzip files
 	unzip tbtzip.zip -d ThinkBioT || ((ERR++))
@@ -80,14 +96,6 @@ if [ $ERR -eq 0 ]; then
 	# enable service to be started next boot
 	systemctl enable tbt.service || ((ERR++))
 	
-	# Install rasbian packages
-	echo '>>> Install dependencies'
-	PACKAGES="sox sqlite3 python-scipy python-numpy python-matplotlib git"
-	apt-get install $PACKAGES -y || ((ERR++))
-	
-	# Install Python packages
-	pip install pyyaml
-	
 	#setup sqlite database
 	echo '>>> Create ThinkBioT database'
 	python3 tbt_DB_Ini.py
@@ -97,32 +105,32 @@ if [ $ERR -eq 0 ]; then
 	
 	echo '>>> Create Index calculation files'
 	# move files for index calculation
-	cd /home/pi/ThinkBioT
+	cd ~/ThinkBioT
 	# create required directories
-	mkdir /home/pi/ThinkBioT/AcousticIndices
+	mkdir ~/ThinkBioT/AcousticIndices
 	# populate AcousticIndices
-	mv -i acoustic_index.py /home/pi/ThinkBioT/AcousticIndices/acoustic_index.py || ((ERR++))
-	mv -i compute_indice.py /home/pi/ThinkBioT/AcousticIndices/compute_indice.py || ((ERR++))
-	mv -i tbt_indexprocess.py /home/pi/ThinkBioT/AcousticIndices/tbt_indexprocess.py || ((ERR++))
-	mv -i AI_README.md /home/pi/ThinkBioT/AcousticIndices/AI_README.md || ((ERR++))
-	mv -i AI_LICENSE.txt /home/pi/ThinkBioT/AcousticIndices/AI_LICENSE.txt || ((ERR++))
-	mv -i __init__.py /home/pi/ThinkBioT/AcousticIndices/__init__.py || ((ERR++))
+	mv -i acoustic_index.py ~/ThinkBioT/AcousticIndices/acoustic_index.py || ((ERR++))
+	mv -i compute_indice.py ~/ThinkBioT/AcousticIndices/compute_indice.py || ((ERR++))
+	mv -i tbt_indexprocess.py ~/ThinkBioT/AcousticIndices/tbt_indexprocess.py || ((ERR++))
+	mv -i AI_README.md ~/ThinkBioT/AcousticIndices/AI_README.md || ((ERR++))
+	mv -i AI_LICENSE.txt ~/ThinkBioT/AcousticIndices/AI_LICENSE.txt || ((ERR++))
+	mv -i __init__.py ~/ThinkBioT/AcousticIndices/__init__.py || ((ERR++))
 	# set executable
-	chmod +x /home/pi/ThinkBioT/AcousticIndices/tbt_indexprocess.py || ((ERR++))
+	chmod +x ~/ThinkBioT/AcousticIndices/tbt_indexprocess.py || ((ERR++))
 	# create required directories
-	mkdir /home/pi/ThinkBioT/AcousticIndices/yaml
+	mkdir ~/ThinkBioT/AcousticIndices/yaml
 	#populate yaml/tbt_index.yaml
-	mv -i tbt_index.yaml /home/pi/ThinkBioT/AcousticIndices/yaml/tbt_index.yaml || ((ERR++))
-	mkdir /home/pi/ThinkBioT/AcousticIndices/IAudioIn
+	mv -i tbt_index.yaml ~/ThinkBioT/AcousticIndices/yaml/tbt_index.yaml || ((ERR++))
+	mkdir ~/ThinkBioT/AcousticIndices/IAudioIn
 	
 	echo '>>> Create Classification calculation files'
 	# move files for classification calculation
-	cd /home/pi/ThinkBioT
-	mkdir /home/pi/ThinkBioT/ClassProcess
-	mkdir /home/pi/ThinkBioT/ClassProcess/CAudioIn	
+	cd ~/ThinkBioT
+	mkdir ~/ThinkBioT/ClassProcess
+	mkdir ~/ThinkBioT/ClassProcess/CAudioIn	
 	
 	# set ownership of ThinkBioT to pi
-	cd /home/pi
+	cd ~
 	chown -R pi:pi ThinkBioT
     sleep 2
 	# delete redundant zip file

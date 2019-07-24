@@ -1,14 +1,37 @@
 #!/usr/bin/python
 
-__author__ = 'guyot'
-__version__ = "0.3"
+"""
+    This file use an object oriented type for audio files described in the file "compute_indice.py".
+    Copyright (C) 2019 Patrice Guyot
 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	
+	Version: 0.3
+	Author: Patrice Guyot
+	Credits: "Patrice Guyot", "Alice Eldridge", "Mika Peck"
+	Email: "guyot.patrice@gmail.com", "alicee@sussex.ac.uk", "m.r.peck@sussex.ac.uk"
+	Source: https://github.com/patriceguyot/Acoustic_Indices
+	
+	ThinkBioT Modifications
+	Date: 11/07/2019
+	Author: Marita Fitzgerald
+"""
 
 import numpy as np
 from scipy.io.wavfile import read as wavread
 from scipy.io.wavfile import write as wavwrite
 from os.path import basename
-
 
 def pcm2float(sig, dtype='float64'):
     """Convert PCM signal to floating point with a range from -1 to 1.

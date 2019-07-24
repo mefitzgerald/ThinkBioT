@@ -8,23 +8,35 @@
         - soundecology R package (http://cran.r-project.org/web/packages/soundecology/index.html) / Luis J. Villanueva-Rivera and Bryan C. Pijanowski
 
     This file use an object oriented type for audio files described in the file "acoustic_index.py".
+    Copyright (C) 2019 Patrice Guyot
 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	
+	Version: 0.3
+	Author: Patrice Guyot
+	Credits: "Patrice Guyot", "Alice Eldridge", "Mika Peck"
+	Email: "guyot.patrice@gmail.com", "alicee@sussex.ac.uk", "m.r.peck@sussex.ac.uk"
+	Source: https://github.com/patriceguyot/Acoustic_Indices
+	
+	ThinkBioT Modifications
+	Date: 11/07/2019
+	Author: Marita Fitzgerald
 """
-
-__author__ = "Patrice Guyot"
-__version__ = "0.3"
-__credits__ = ["Patrice Guyot", "Alice Eldridge", "Mika Peck"]
-__email__ = ["guyot.patrice@gmail.com", "alicee@sussex.ac.uk", "m.r.peck@sussex.ac.uk"]
-__status__ = "Development"
-
 
 from scipy import signal, fftpack
 import numpy as np
 import matplotlib.pyplot as plt
-
-
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------
 def compute_spectrogram(file, windowLength=512, windowHop= 256, scale_audio=True, square=True, windowType='hanning', centered=False, normalized = False ):

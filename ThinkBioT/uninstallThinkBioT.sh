@@ -66,7 +66,7 @@ if [ $ERR -eq 0 ]; then
   if [ -n "$found"]; then
 	echo 'ThinkBioT found & deleting'
 	# delete ThinkBioT directory
-	rm -r /home/pi/ThinkBioT || ((ERR++))
+	rm -r ~/ThinkBioT || ((ERR++))
   else
     echo 'ThinkBioT is uninstalled already, skip this step.'
   fi
@@ -78,7 +78,7 @@ if [ $ERR -eq 0 ]; then
   echo '>>> Uninstall Alsa audio configuration files'
   # delete files
   rm /etc/asound.conf || ((ERR++))
-  rm /home/pi/.asoundrc || ((ERR++))
+  rm ~/.asoundrc || ((ERR++))
   
   echo '>>> Restore Audio Default settings'
   alsactl init

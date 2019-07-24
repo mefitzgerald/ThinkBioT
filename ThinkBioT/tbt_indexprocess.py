@@ -34,21 +34,15 @@ import yaml
 from scipy import signal
 import csv
 
-
-
 if __name__ == '__main__':
 
     #Set config file
     yml_file = 'yaml/tbt_index.yaml'
-
-    filename = 'audio_files/LINE_2003-10-30_20_00_34.wav'
-
-
+    filename = 'IAudioIn/LINE_2003-10-30_20_00_34.wav'
     file = AudioFile(filename, verbose=True)
 
     with open(yml_file, 'r') as stream:
-        data_config = yaml.load(stream)
-
+        data_config = yaml.load(stream, Loader=yaml.FullLoader)
 
     # Pre-processing -----------------------------------------------------------------------------------
     if 'Filtering' in data_config:
@@ -58,10 +52,6 @@ if __name__ == '__main__':
             Wn = freq_filter/float(file.niquist)
             order = data_config['Filtering']['order']
             [b,a] = signal.butter(order, Wn, btype='highpass')
-            # to plot the frequency response
-            #w, h = signal.freqz(b, a, worN=2000)
-            #plt.plot((file.sr * 0.5 / np.pi) * w, abs(h))
-            #plt.show()
             file.process_filtering(signal.filtfilt(b, a, file.sig_float))
         elif data_config['Filtering']['type'] == 'windowed_sinc':
             print '- Pre-processing - High-Pass Filtering:', data_config['Filtering']
@@ -81,8 +71,6 @@ if __name__ == '__main__':
             h = -h
             h[(N - 1) / 2] += 1
             file.process_filtering(np.convolve(file.sig_float, h))
-
-
 
     # Compute Indices -----------------------------------------------------------------------------------
     print '- Compute Indices'
