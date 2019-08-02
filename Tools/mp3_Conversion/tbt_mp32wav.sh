@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+# to run use ./tbt_mp32wav.sh or sh tbt_mp32wav.sh or bash ./tbt_mp32wav.sh
 
 # LICENSE:
 # ThinkBioT is an Bioacoustic sensor framework for the collection, processing
@@ -22,22 +23,38 @@
 # https://github.com/mefitzgerald/ThinkBioT/issues
 
 #make directory for converted files
-mkdir -p converted
+mkdir -p Samples
+
+#instanciate counter
+counter=0
 
 #loop through all files to be converted 
 for i in *.mp3
 do
-	var1=$(exiftool -Title -charset UTF8  $i)
-	#remove title
-	secondString=""
-	var2=${var1/Title : /$secondString}
-	echo $var2
+	# exiftool $i (reads all metadata to screen)
+	var1=$(exiftool -s -s -s -Title -charset UTF8  $i)
+	dur=$(exiftool -s -s -s -n -Duration  $i)
 	#remove formal name
-	dirname=${var2%%(*} 
-	echo $dirname
-	#echo tmp=${dirname%%(*}
-	#make directory for converted file class (if not exists)
-	mkdir -p "$dirname"
+	dirname=${var1%%(*}
+	dirname=${dirname// /""}
+	dirname=${dirname,,}
 	
-    sox "$i" "converted/$(basename -s .mp3 '$i').wav"
+	#make directory for converted file class (if not exists)
+	mkdir -p "Samples/$dirname"	
+	
+	if [ $dur > 3 ] # sample length greater than 3 seconds split into segments containing data peaks
+	then
+		sox "$i" -c 1 -r 48000 "Samples/$dirname/$(basename -s .mp3 "$i").wav" silence 1 0.001 3% trim 0 3 : newfile : restart
+	else
+		#convert file to wav (mono 48000) without altering duration
+		sox "$i" -c 1 -r 48000 "Samples/$dirname/$(basename -s .mp3 "$i").wav" 
+		echo $dur
+	fi
+	counter=`expr $counter + 1`
+	echo samples processed: $counter
 done
+
+  
+
+
+
