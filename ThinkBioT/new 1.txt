@@ -1,0 +1,9 @@
+mysql -u root -h DATABASEHOST -p bitnami_wordpress -e "UPDATE wp_users SET user_pass=MD5('NEWPASSWORD') WHERE ID='1';"
+
+
+mysql -u root -p bitnami_wordpress -e "UPDATE wp_users SET user_pass=MD5('Cc164728#') WHERE ID='1';"
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Cc164728#';
+
+sudo /opt/bitnami/apps/wordpress/bnconfig --userpassword Cc164728#
+
+mysql -u root -p bitnami_wordpress -e "UPDATE wp_users SET user_pass=MD5('Cc164728#') WHERE ID='1';"
