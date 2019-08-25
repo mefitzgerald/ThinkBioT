@@ -27,10 +27,34 @@
 # === DEPENDECIES ===
 # sox : http://sox.sourceforge.net/
 
-for file in *; do
-        if [ -f "$file" ]; 
-	then 
-        echo "$file" 
-    fi 
+mkdir -p ../spectro-data
+echo "location, label" >> model-labels.csv
+
+curdir=$(pwd)
+# for every folder in the current directory
+for f in $curdir/*
+do 
+	# change to that folder
+	[ -d $f ] && cd "$f" && echo Entering into $f
+	className=${PWD##*/}
+	# for every wavfile in the folder
+	for i in *.wav
+	do
+		dur=$(exiftool -s -s -s -n -Duration  $i)
+		#check file not empty
+		if [ $dur > 4 ]
+		then
+			#make spectrogram
+			echo $className
+			outfile="${i%.*}.png"
+			sox $i −n spectrogram −x 1024 −y 512 -r -o "$outfile"
+			mv "$outfile" ../../spectro-data
+			# please fill in your google cloud storage bucket path below and create a dictionary in the buckt called spectro-data
+			# this script will not upload spectrograms, but needs the path name for the csv label file.
+			bucket="gs://yourbucketname/spectro-data/"
+			uri="$bucket$outfile"
+			echo "$uri, $className" >> ../model-labels.csv
+		fi
+	done 
 done
 
