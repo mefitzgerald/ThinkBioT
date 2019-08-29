@@ -128,6 +128,11 @@ if [ $ERR -eq 0 ]; then
 	cd ~/ThinkBioT
 	mkdir ~/ThinkBioT/ClassProcess
 	mkdir ~/ThinkBioT/ClassProcess/CAudioIn	
+	mkdir ~/ThinkBioT/ClassProcess/CModel
+	
+	# install Rockblock Python Library
+	cd ~ 
+	git clone https://github.com/MakerSnake/pyRockBlock || ((ERR++))
 	
 	# set ownership of ThinkBioT to pi
 	cd ~

@@ -32,19 +32,21 @@ CREATE TABLE IF NOT EXISTS Settings (
  SettingID INTEGER PRIMARY KEY AUTOINCREMENT,
  SettingName TEXT,
  SettingActive INTEGER,
- AcIndexCaptureTime TEXT,
- ClassificationCaptureTime TEXT,
+ DawnCaptureTime TEXT,
+ DuskCaptureTime TEXT,
+ ProcessTXTime TEXT,
  Tr_Sil_dur REAL,
  Tr_Sil_dur_perc INTEGER,
  Tr_Sil_below_dur REAL,
  Tr_Sil_below_dur_perc INTEGER,
  Tr_Hpfilter INTEGER,
- ProcessingTaskTime TEXT,
- CurrentMode INTEGER
+ CurrentMode INTEGER,
+ ResearchStartDateTime TEXT,
+ ResearchEndDateTime TEXT
 );
 
-INSERT INTO Settings (SettingName, SettingActive, AcIndexCaptureTime, ClassificationCaptureTime, Tr_Sil_dur, Tr_Sil_dur_perc, Tr_Sil_below_dur, Tr_Sil_below_dur_perc, Tr_Hpfilter, ProcessingTaskTime, CurrentMode) 
-VALUES ("DEFAULT", 1, NULL, NULL, 0.1, 1, 1.0, 1, 80, NULL, 0);
+INSERT INTO Settings (SettingName, SettingActive, DawnCaptureTime, DuskCaptureTime, ProcessTXTime, Tr_Sil_dur, Tr_Sil_dur_perc, Tr_Sil_below_dur, Tr_Sil_below_dur_perc, Tr_Hpfilter, CurrentMode) 
+VALUES ("DEFAULT", 1, 0630, 1800, 2300, 0.1, 1, 1.0, 1, 80, 0, NULL, NULL);
 
 
 
