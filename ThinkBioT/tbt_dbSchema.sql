@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS Settings (
  ResearchEndDateTime TEXT
 );
 
-INSERT INTO Settings (SettingName, SettingActive, DawnCaptureTime, DuskCaptureTime, ProcessTXTime, Tr_Sil_dur, Tr_Sil_dur_perc, Tr_Sil_below_dur, Tr_Sil_below_dur_perc, Tr_Hpfilter, CurrentMode) 
+INSERT INTO Settings (SettingName, SettingActive, DawnCaptureTime, DuskCaptureTime, ProcessTXTime, Tr_Sil_dur, Tr_Sil_dur_perc, Tr_Sil_below_dur, Tr_Sil_below_dur_perc, Tr_Hpfilter, CurrentMode, ResearchStartDateTime, ResearchEndDateTime) 
 VALUES ("DEFAULT", 1, 0630, 1800, 2300, 0.1, 1, 1.0, 1, 80, 0, NULL, NULL);
 
 

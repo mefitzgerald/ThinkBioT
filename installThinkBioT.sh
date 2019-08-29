@@ -57,7 +57,7 @@ if [ $ERR -eq 0 ]; then
     echo 'ThinkBioT is installed already, skip this step.'
   else
 	echo '>>> Begin ThinkBioT Installation'
-	
+	mkdir ~/ThinkBioT
 	#ensure installtion in home directory
 	cd ~
 	
