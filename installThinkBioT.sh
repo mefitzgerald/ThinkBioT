@@ -57,10 +57,9 @@ if [ $ERR -eq 0 ]; then
     echo 'ThinkBioT is installed already, skip this step.'
   else
 	echo '>>> Begin ThinkBioT Installation'
-	mkdir ~/ThinkBioT
 	#ensure installtion in home directory
 	cd ~
-	
+	mkdir ThinkBioT	
 	# Install rasbian packages
 	echo '>>> Install dependencies'
 	PACKAGES="git sox sqlite3 python-scipy=0.18.1-2 python-numpy=1:1.12.1-3 python-matplotlib git screen usbutils"
@@ -71,7 +70,7 @@ if [ $ERR -eq 0 ]; then
 	pip install pyserial
 	
 	# get RockBlock files
-	git clone https://github.com/MakerSnake/pyRockBlock
+	git clone https://github.com/MakerSnake/pyRockBlock || ((ERR++))
 	
 	# get ThinkBioT install files
 	wget https://github.com/mefitzgerald/ThinkBioT/raw/master/ThinkBioT/tbtzip.zip -O tbtzip.zip || ((ERR++))
@@ -83,6 +82,9 @@ if [ $ERR -eq 0 ]; then
 	chmod +x tbt_Start.py || ((ERR++))
 	chmod +x tbt_DB_Ini.py	|| ((ERR++))
 	chmod +x trecord.sh || ((ERR++))
+	chmod +x arecord.sh || ((ERR++))
+	chmod +x transmit.sh || ((ERR++))
+	chmod +x classify_spect || ((ERR++))
 	
 	echo '>>> Set soundBlaster as default audio device'
 	# move .asoundrc audio settings file to home
@@ -108,7 +110,9 @@ if [ $ERR -eq 0 ]; then
 	cd ~/ThinkBioT
 	# create required directories
 	mkdir ~/ThinkBioT/AcousticIndices
+
 	# populate AcousticIndices
+	mv -i arecord.sh ~/ThinkBioT/AcousticIndices/arecord.sh || ((ERR++))
 	mv -i acoustic_index.py ~/ThinkBioT/AcousticIndices/acoustic_index.py || ((ERR++))
 	mv -i compute_indice.py ~/ThinkBioT/AcousticIndices/compute_indice.py || ((ERR++))
 	mv -i tbt_indexprocess.py ~/ThinkBioT/AcousticIndices/tbt_indexprocess.py || ((ERR++))
@@ -129,10 +133,10 @@ if [ $ERR -eq 0 ]; then
 	mkdir ~/ThinkBioT/ClassProcess
 	mkdir ~/ThinkBioT/ClassProcess/CAudioIn	
 	mkdir ~/ThinkBioT/ClassProcess/CModel
-	
-	# install Rockblock Python Library
-	cd ~ 
-	git clone https://github.com/MakerSnake/pyRockBlock || ((ERR++))
+	mkdir ~/ThinkBioT/ClassProcess/CSpectrograms
+	cd ~
+	mv -i trecord.sh ~/ThinkBioT/ClassProcess/trecord.sh || ((ERR++))
+	mv -i classify_spect.py ~/ThinkBioT/ClassProcess/CModel.sh/classify_spect.py || ((ERR++))
 	
 	# set ownership of ThinkBioT to pi
 	cd ~
