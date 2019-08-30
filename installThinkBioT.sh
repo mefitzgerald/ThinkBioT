@@ -31,9 +31,6 @@ if [ "$(id -u)" != 0 ]; then
   exit 1
 fi
 
-# target directory
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/ThinkBioT"
-
 # error counter
 ERR=0
 
@@ -84,7 +81,7 @@ if [ $ERR -eq 0 ]; then
 	chmod +x trecord.sh || ((ERR++))
 	chmod +x arecord.sh || ((ERR++))
 	chmod +x transmit.sh || ((ERR++))
-	chmod +x classify_spect || ((ERR++))
+	chmod +x classify_spect.sh || ((ERR++))
 	
 	echo '>>> Set soundBlaster as default audio device'
 	# move .asoundrc audio settings file to home
@@ -134,10 +131,9 @@ if [ $ERR -eq 0 ]; then
 	mkdir ~/ThinkBioT/ClassProcess/CAudioIn	
 	mkdir ~/ThinkBioT/ClassProcess/CModel
 	mkdir ~/ThinkBioT/ClassProcess/CSpectrograms
-	cd ~
 	mv -i trecord.sh ~/ThinkBioT/ClassProcess/trecord.sh || ((ERR++))
 	mv -i classify_spect.py ~/ThinkBioT/ClassProcess/CModel.sh/classify_spect.py || ((ERR++))
-	
+	cd ~	
 	# set ownership of ThinkBioT to pi
 	cd ~
 	chown -R pi:pi ThinkBioT
