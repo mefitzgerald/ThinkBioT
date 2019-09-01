@@ -121,9 +121,11 @@ if [ $ERR -eq 0 ]; then
     mkdir ./ClassProcess/CModel
     mkdir ./ClassProcess/CSpectrograms
     mv -i trecord.sh ./ClassProcess/trecord.sh || ((ERR++))
-    mv -i classify_spect.py ./ClassProcess/CModel.sh/classify_spect.py || ((ERR++))
+    mv -i classify_spect.py ./ClassProcess/CModel/classify_spect.py || ((ERR++))
+    mv -i classify_spect.py ./ClassProcess/CModel/auto_classify_spect.py || ((ERR++))
     chmod +x ./ClassProcess/trecord.sh || ((ERR++))
-    chmod +x ./ClassProcess/CModel.sh/classify_spect.py || ((ERR++))
+    chmod +x ./ClassProcess/CModel/classify_spect.py || ((ERR++))
+    chmod +x ./ClassProcess/CModel/auto_classify_spect.py || ((ERR++))
 	cd ..
     chown -R pi:pi ThinkBioT
     sleep 2
