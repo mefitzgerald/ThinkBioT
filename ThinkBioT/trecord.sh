@@ -1,6 +1,6 @@
 [ -z $BASH ] && { exec bash "$0" "$@" || exit; } 
 #!/bin/bash
-# to run use ./trecord.sh or sh ./trecord.sh or bash ./trecord.sh
+# to run use sh trecord.sh
 
 # LICENSE:
 # ThinkBioT is an Bioacoustic sensor framework for the collection, processing
@@ -36,23 +36,43 @@ cmd="SELECT * FROM Settings WHERE SettingActive = 1"
 IFS=$'|'
 TBT=(`sqlite3 ~/tbt_database "$cmd"`)
 
+echo "Recording Settings"
+curr_settingID="${TBT[0]}"
+echo curr_settingID: $curr_settingID
+dawn_capture_time="${TBT[3]}"
+echo dawn_capture_time: $dawn_capture_time
+dusk_capture_time="${TBT[4]}"
+echo dusk_capture_time: $dusk_capture_time
 Tr_Sil_dur="${TBT[6]}"
-# echo $Tr_Sil_dur
+echo Triggered_Silence_duration: $Tr_Sil_dur
 Tr_Sil_dur_perc="${TBT[7]}"
-# echo $Tr_Sil_dur_perc
+echo Triggered_Silence_duration_percent: $Tr_Sil_dur_perc
 Tr_Sil_below_dur="${TBT[8]}"
-# echo $Tr_Sil_below_dur
+echo Triggered_Silence_below_threashold_duration: $Tr_Sil_below_dur
 Tr_Sil_below_dur_perc="${TBT[9]}"
-# echo $Tr_Sil_below_dur_perc
+echo Triggered_Silence_below_duration_percent: $Tr_Sil_below_dur_perc
 Tr_Hpfilter="${TBT[10]}"
-# echo $Tr_Hpfilter
+echo Triggered_High_pass_filter: $Tr_Hpfilter
+Tr_Gain="${TBT[11]}"
+echo Triggered_recording_Gain: $Tr_Gain
+Tr_Wav_length="${TBT[12]}"
+echo Triggered_Wavfile_length: $Tr_Wav_length
+Tr_Test_Length="${TBT[13]}"
+echo Triggered_Test_Length: $Tr_Test_Length
+curr_mode="${TBT[15]}"
+echo Current mode: $curr_mode
+echo "Modes"
+echo "0 = Automnomous not active (Manual mode)"
+echo "1 = Dawn Capture Mode"
+echo "2 = Dusk Capture Mode"
+echo "3 = TX Mode"
 
 # unix epoch time for file name
 uniepoch=$(date +"%s")
 
-# timeout sets recoding to time in seconds for 10 seconds
-timeout 10 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart
-
+# timeout sets recoding to time in seconds for 5 minutes
+timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+# timeout 2 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
 #check wavs exist 
 count=`ls -1 *.wav 2>/dev/null | wc -l`
 echo "recorded $count files"
@@ -63,10 +83,10 @@ then
 		# get duration of wav file in seconds
 		soundlength=$(soxi -D $i)
 		# filter out wav files shorter than 5 seconds
-		if [ $(float_gt $soundlength 5) == 1 ] ; then
+		if [ $(float_gt $soundlength $Tr_Wav_length) == 1 ] ; then
 			echo "dur > 5, soundfile sucessfully split"
 			# split all wav files into files of 5 second durations
-			sox -V1 $i $uniepoch.wav trim 0 5 : newfile : restart		
+			sox -V1 $i $uniepoch.wav trim 0 $Tr_Wav_length : newfile : restart		
 		else
 			echo "dur < 5 soundfile discarded"
 		fi
@@ -75,11 +95,18 @@ then
 	done
 fi
 
-#check wavs exist after split 
+#create TaskSession in Database
+cmd2="INSERT INTO TaskSession (TestLong, TestLat, TestElevation, TransmittedTime, SettingID) VALUES ('145.0', '-37.6', '416.6', NULL, $curr_settingID);"
+TBT2=(`sqlite3 ~/tbt_database "$cmd2"`)		
+#get most current sessionid 
+cmd3="SELECT MAX(SessionID) FROM TaskSession;"
+TBT3=(`sqlite3 ~/tbt_database "$cmd3"`)	
+out="${TBT3[0]}"
+	
+#check if wavs exits to convert to spectrograms
 count=`ls -1 *.wav 2>/dev/null | wc -l`
 if [ $count != 0 ]
 then 
-
 	# convert to spectrograms
 	for file in *.wav;do
 		# filter out tail end split files
@@ -92,6 +119,13 @@ then
 			echo "spectrogram generated"
 		fi
 		rm $file
-	done
+	done	
+	#start classification passing the SessionId to the classify script
+	cd CModel
+	python3 auto_classify_spect.py --taskSessionId $out
+else
+# if no wavs exist to convert to spectrograms set next mode	
+	sh ../tbt_mode_updater.sh
 fi
+
 

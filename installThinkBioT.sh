@@ -75,6 +75,7 @@ if [ $ERR -eq 0 ]; then
     chmod +x tbt_Start.py || ((ERR++))
     chmod +x tbt_DB_Ini.py	|| ((ERR++))
     chmod +x transmit.sh || ((ERR++))
+    chmod +x tbt_mode_updater.sh || ((ERR++))
     
     echo '>>> Set soundBlaster as default audio device'
     # move .asoundrc audio settings file to home
@@ -92,8 +93,9 @@ if [ $ERR -eq 0 ]; then
     echo '>>> Create ThinkBioT database'
     python3 tbt_DB_Ini.py
     sleep 1
-    rm tbt_DB_Ini.py
-    rm tbt_dbSchema.sql
+	#leave in for option to clear db
+    #rm tbt_DB_Ini.py 
+    #rm tbt_dbSchema.sql
     
     echo '>>> Create Index calculation files'  
     mkdir AcousticIndices
@@ -128,6 +130,8 @@ if [ $ERR -eq 0 ]; then
     chmod +x ./ClassProcess/CModel/auto_classify_spect.py || ((ERR++))
 	cd ..
     chown -R pi:pi ThinkBioT
+	chown -R pi:pi tbt_database
+	chown -R pi:pi pyRockBlock
     sleep 2
     rm tbtzip.zip
   fi
