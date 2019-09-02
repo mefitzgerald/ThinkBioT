@@ -23,18 +23,13 @@ import argparse
 import os
 import glob
 import re
+import sqlite3
 from pathlib import Path
 from edgetpu.classification.engine import ClassificationEngine
 from PIL import Image
 
 # Function to read labels from text files.
 def ReadLabelFile(file_path):
-    """Reads labels from text file and store it in a dict.
-    Args:
-      file_path: String, path to the label file.
-    Returns:
-      Dict of (int, string) which maps label id to description.
-    """
     counter = 0
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
@@ -46,6 +41,12 @@ def ReadLabelFile(file_path):
    
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--taskSessionId', help='taskSessionId number.', required=True)
+    parser.add_argument('--epochtime', help='time sample captured.', required=True)
+    args = parser.parse_args()
+    print(args.taskSessionId)
+    print(args.epochtime)
     # Get labels file   
     os.chdir(os.getcwd())
     for label_file in glob.glob("*.txt"):
@@ -58,6 +59,12 @@ def main():
         print(model_file)       
     # Initialize engine.
     engine = ClassificationEngine(model_file)
+    # Prepare database connector & cursor
+    try:
+        conn = sqlite3.connect('/home/pi/tbt_database')
+    except Error:
+        print(Error)
+    c = conn.cursor()
     # Run inference.
     pathlist = Path('/home/pi/ThinkBioT/ClassProcess/CSpectrograms').glob('**/*.png')
     for path in pathlist:
@@ -69,11 +76,12 @@ def main():
             print('---------------------------')
             print(labels[result[0]])
             print('Score : ', result[1])
-    
-
+            c.execute("INSERT INTO ClassTasks(ClassTaskTime, ClassTaskSourceFile, ClassTaskResult, ClassTaskPercent, SessionID) VALUES(?,?,?,?,?)", (args.epochtime, path_in_str, labels[result[0]], str(result[1]), args.taskSessionId))
+            conn.commit()
+    conn.close()
+        
 if __name__ == '__main__':
     main()
-
 
 
 

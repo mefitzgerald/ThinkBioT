@@ -1,8 +1,7 @@
-[ -z $BASH ] && { exec bash "$0" "$@" || exit; } 
+[ -z $BASH ] && { exec bash "$0" "$@" || exit; }
 #!/bin/bash
-
 # to run use sh tbt_mode_updater.sh
-
+#
 # LICENSE:
 # ThinkBioT is an Bioacoustic sensor framework for the collection, processing
 # and satellite transmission of Bio-Taxa Classification and Acoustic Indicies data.
@@ -23,8 +22,9 @@
 # 
 # SUPPORT:
 # https://github.com/mefitzgerald/ThinkBioT/issues
-
+#
 # Get mode information
+echo "here"
 cmd="SELECT * FROM Settings WHERE SettingActive = 1"
 IFS=$'|'
 TBT=(`sqlite3 ~/tbt_database "$cmd"`)
@@ -41,22 +41,23 @@ echo "curr_mode $curr_mode"
 # if current mode is DawnCapture
 if [ $curr_mode == 1 ]
 then
-	# if DuskCapture is not NULL
-	if [ $dusk_capture_time != "NULL" ]
+	# if DuskCapture is not set (-1)
+	echo dusk capture time: $dusk_capture_time
+	if [[ $dusk_capture_time == "-1" ]]
 	then
-		#set next mode to DuskCapture
-		cmd4="UPDATE Settings
-		SET CurrentMode = 2
-		WHERE SettingActive = 1;"
-		TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
-		echo "Setting next mode to DuskCapture, shutting down"
-	else
 		# Else DuskCapture is inactive and next mode is therefore transmission
 		cmd4="UPDATE Settings
 		SET CurrentMode = 3
 		WHERE SettingActive = 1;"
 		TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
 		echo "Setting next mode to TX Mode, shutting down"
+	else
+		#set next mode to DuskCapture
+		cmd4="UPDATE Settings
+		SET CurrentMode = 2
+		WHERE SettingActive = 1;"
+		TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
+		echo "Setting next mode to DuskCapture, shutting down"
 	fi
 # if current mode is DuskCapture mode	
 elif [ $curr_mode == 2 ]
@@ -80,3 +81,7 @@ else
 	# Else current mode is 0 (Manual)
 	echo "Manual Mode active"
 fi	
+
+#manual update if required
+# sqlite3 ~/tbt_database 
+# UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;

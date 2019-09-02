@@ -71,8 +71,8 @@ echo "3 = TX Mode"
 uniepoch=$(date +"%s")
 
 # timeout sets recoding to time in seconds for 5 minutes
-timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
-# timeout 2 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+# timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+timeout 20 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
 #check wavs exist 
 count=`ls -1 *.wav 2>/dev/null | wc -l`
 echo "recorded $count files"
@@ -84,11 +84,11 @@ then
 		soundlength=$(soxi -D $i)
 		# filter out wav files shorter than 5 seconds
 		if [ $(float_gt $soundlength $Tr_Wav_length) == 1 ] ; then
-			echo "dur > 5, soundfile sucessfully split"
+			echo "dur > $Tr_Wav_length, soundfile sucessfully split"
 			# split all wav files into files of 5 second durations
 			sox -V1 $i $uniepoch.wav trim 0 $Tr_Wav_length : newfile : restart		
 		else
-			echo "dur < 5 soundfile discarded"
+			echo "dur < $Tr_Wav_length soundfile discarded"
 		fi
 		#delete source file (all usable data has been split and renamed)
 		rm $i
@@ -122,10 +122,9 @@ then
 	done	
 	#start classification passing the SessionId to the classify script
 	cd CModel
-	python3 auto_classify_spect.py --taskSessionId $out
+	python3 auto_classify_spect.py --taskSessionId $out --epochtime $uniepoch
 else
 # if no wavs exist to convert to spectrograms set next mode	
-	sh ../tbt_mode_updater.sh
+	sh ~/ThinkBioT/tbt_update.sh
 fi
-
 

@@ -74,8 +74,9 @@ if [ $ERR -eq 0 ]; then
     # make files executable
     chmod +x tbt_Start.py || ((ERR++))
     chmod +x tbt_DB_Ini.py	|| ((ERR++))
-    chmod +x transmit.sh || ((ERR++))
-    chmod +x tbt_mode_updater.sh || ((ERR++))
+    chmod +x tbt_transmit.sh || ((ERR++))
+    chmod +x tbt_update.sh || ((ERR++))
+    chmod +x tbt_resetDb.sh || ((ERR++))
     
     echo '>>> Set soundBlaster as default audio device'
     # move .asoundrc audio settings file to home

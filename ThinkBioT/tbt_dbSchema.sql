@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS TaskSession (
 CREATE TABLE IF NOT EXISTS ClassTasks (
  ClassID INTEGER PRIMARY KEY AUTOINCREMENT,
  ClassTaskTime TEXT,
- ClassTaskSourceFile TEXT
+ ClassTaskSourceFile TEXT,
  ClassTaskResult TEXT,
  ClassTaskPercent TEXT,
  SessionID INTEGER,
@@ -53,11 +53,10 @@ INSERT INTO Settings 	(SettingName, SettingActive, DawnCaptureTime, DuskCaptureT
 						Tr_Sil_dur, Tr_Sil_dur_perc, Tr_Sil_below_dur, Tr_Sil_below_dur_perc, Tr_Hpfilter, 
 						Tr_Gain, Tr_Wav_length, Tr_Test_Length, Ai_Gain, 
 						CurrentMode, ResearchStartDateTime, ResearchEndDateTime) 
-VALUES ("DEFAULT", 1, 0630, NULL, 2300, 
+VALUES ("DEFAULT", 1, 0630, "-1", 2300, 
 		0.1, 1, 1.0, 1, 80, 
 		6, 5, 300, 6, 
-		0, NULL, NULL);
-
+		0, "-1", "-1");
 
 
 
