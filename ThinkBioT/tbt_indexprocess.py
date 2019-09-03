@@ -16,29 +16,48 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
-	Version: 0.3
-	Author: Patrice Guyot
-	Credits: "Patrice Guyot", "Alice Eldridge", "Mika Peck"
-	Email: "guyot.patrice@gmail.com", "alicee@sussex.ac.uk", "m.r.peck@sussex.ac.uk"
-	Source: https://github.com/patriceguyot/Acoustic_Indices
-	
-	ThinkBioT Modifications
-	Date: 11/07/2019
-	Author: Marita Fitzgerald
+    
+    Version: 0.3
+    Author: Patrice Guyot
+    Credits: "Patrice Guyot", "Alice Eldridge", "Mika Peck"
+    Email: "guyot.patrice@gmail.com", "alicee@sussex.ac.uk", "m.r.peck@sussex.ac.uk"
+    Source: https://github.com/patriceguyot/Acoustic_Indices
+    
+    ThinkBioT Modifications
+    Date: 11/07/2019
+    Author: Marita Fitzgerald
 """
 
 from compute_indice import *
 from acoustic_index import *
-import yaml
 from scipy import signal
 import csv
+import yaml
+import argparse
+import sqlite3
+import subprocess
+import os
 
 if __name__ == '__main__':
 
+    #Get arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--indiciesfile', help='Path to indicies file.', required=True)
+    parser.add_argument('--taskSessionId', help='Task session identifier.', required=True)
+    parser.add_argument('--epochtime', help='time recorded.', required=True)
+    args = parser.parse_args()
+    print(args.indiciesfile)
+    print(args.taskSessionId)
+    print(args.epochtime)
+    
+    # Prepare database connector & cursor
+    conn = sqlite3.connect('/home/pi/tbt_database')
+    c = conn.cursor()
+
     #Set config file
-    yml_file = 'yaml/tbt_index.yaml'
-    filename = 'IAudioIn/LINE_2003-10-30_20_00_34.wav'
+    yml_file = '/home/pi/ThinkBioT/AcousticIndices/yaml/tbt_index.yaml'
+    #filename = 'IAudioIn/LINE_2003-10-30_20_00_34.wav'
+    filename = "/home/pi/ThinkBioT/AcousticIndices/" + args.indiciesfile
     file = AudioFile(filename, verbose=True)
 
     with open(yml_file, 'r') as stream:
@@ -214,15 +233,20 @@ if __name__ == '__main__':
             file.indices[index_name] = Index(index_name, main_value=main_value)
 
     # Output Indices -----------------------------------------------------------------------------------
-    print '- Write Indices'
-    writer = csv.writer(open('dict.csv', 'wb'))
-
     keys = ['filename']
     values = [file.file_name]
     for index, Index in file.indices.items():
         for key, value in Index.__dict__.iteritems():
             if key != 'name':
                 keys.append(index + '__' + key)
-                values.append(value)
-    writer.writerow(keys)
-    writer.writerow(values)
+                print(index)
+                print(key)
+                print(value)
+                index_cat=index + " " + key
+                c.execute("INSERT INTO AcousticIndexTasks(IndexTaskTime, IndexTaskType, IndexTaskSource, IndexTaskResult, SessionID) VALUES(?,?,?,?,?)", (args.epochtime, index_cat, args.indiciesfile, value, args.taskSessionId))
+                conn.commit()
+    conn.close()
+	
+	#Start classification audio capture
+    #subprocess.call('/home/pi/ThinkBioT/ClassProcess/trecord.sh')
+    os.system('sh /home/pi/ThinkBioT/ClassProcess/trecord.sh')

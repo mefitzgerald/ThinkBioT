@@ -72,7 +72,7 @@ uniepoch=$(date +"%s")
 
 # timeout sets recoding to time in seconds for 5 minutes
 # timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
-timeout 20 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+timeout 30 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
 #check wavs exist 
 count=`ls -1 *.wav 2>/dev/null | wc -l`
 echo "recorded $count files"
@@ -94,10 +94,7 @@ then
 		rm $i
 	done
 fi
-
-#create TaskSession in Database
-cmd2="INSERT INTO TaskSession (TestLong, TestLat, TestElevation, TransmittedTime, SettingID) VALUES ('145.0', '-37.6', '416.6', NULL, $curr_settingID);"
-TBT2=(`sqlite3 ~/tbt_database "$cmd2"`)		
+	
 #get most current sessionid 
 cmd3="SELECT MAX(SessionID) FROM TaskSession;"
 TBT3=(`sqlite3 ~/tbt_database "$cmd3"`)	
@@ -121,8 +118,7 @@ then
 		rm $file
 	done	
 	#start classification passing the SessionId to the classify script
-	cd CModel
-	python3 auto_classify_spect.py --taskSessionId $out --epochtime $uniepoch
+	python3 ~/ThinkBioT/ClassProcess/CModel/auto_classify_spect.py --taskSessionId $out --epochtime $uniepoch
 else
 # if no wavs exist to convert to spectrograms set next mode	
 	sh ~/ThinkBioT/tbt_update.sh

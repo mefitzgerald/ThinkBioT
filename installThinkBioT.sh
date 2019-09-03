@@ -54,12 +54,14 @@ if [ $ERR -eq 0 ]; then
    
     echo '>>> Install dependencies'
     # Install rasbian packages
-    PACKAGES="git sox sqlite3 python-scipy=0.18.1-2 python-numpy=1:1.12.1-3 python-matplotlib git screen usbutils"
+    PACKAGES="git sox sqlite3 python-scipy=0.18.1-2 python-numpy=1:1.12.1-3 python-matplotlib git screen usbutils sqlitebrowser"
     apt-get install $PACKAGES -y || ((ERR++))  
   
     # Install Python packages
     pip install pyyaml==5.1.1 || ((ERR++))
     pip install pyserial || ((ERR++))
+    pip3 install scipy || ((ERR++))
+    pip3 install matplotlib || ((ERR++))
   
     # get RockBlock files
     git clone https://github.com/MakerSnake/pyRockBlock || ((ERR++))
@@ -74,7 +76,7 @@ if [ $ERR -eq 0 ]; then
     # make files executable
     chmod +x tbt_Start.py || ((ERR++))
     chmod +x tbt_DB_Ini.py	|| ((ERR++))
-    chmod +x tbt_transmit.sh || ((ERR++))
+    chmod +x tbt_transmitRes.py || ((ERR++))
     chmod +x tbt_update.sh || ((ERR++))
     chmod +x tbt_resetDb.sh || ((ERR++))
     

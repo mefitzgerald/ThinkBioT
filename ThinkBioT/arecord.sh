@@ -1,6 +1,6 @@
 [ -z $BASH ] && { exec bash "$0" "$@" || exit; } 
 #!/bin/bash
-# to run use ./trecord.sh or sh ./trecord.sh or bash ./trecord.sh
+# to run use sh ./arecord.sh
 
 # LICENSE:
 # ThinkBioT is an Bioacoustic sensor framework for the collection, processing
@@ -23,12 +23,44 @@
 # SUPPORT:
 # https://github.com/mefitzgerald/ThinkBioT/issues
 
-cd ~/ThinkBioT/ClassProcess/CAudioIn
-
-#get recording requirements from Settings db
 cmd="SELECT * FROM Settings WHERE SettingActive = 1"
 IFS=$'|'
 TBT=(`sqlite3 ~/tbt_database "$cmd"`)
 
-# timeout loops for 10 seconds
-timeout 10 rec -c1 -r 48000 record.wav sinc silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart
+echo "Recording Settings"
+curr_settingID="${TBT[0]}"
+echo curr_settingID: $curr_settingID
+gain_db="${TBT[14]}"
+echo Gain: $gain_db
+curr_mode="${TBT[15]}"
+echo Current mode: $curr_mode
+
+echo "Modes"
+echo "0 = Automnomous not active (Manual mode)"
+echo "1 = Dawn Capture Mode"
+echo "2 = Dusk Capture Mode"
+echo "3 = TX Mode"
+
+# unix epoch time for file name
+uniepoch=$(date +"%s")
+
+#create TaskSession in Database
+cmd="INSERT INTO TaskSession (TestLong, TestLat, TestElevation, TransmittedTime, SettingID) VALUES ('145.0', '-37.6', '416.6', '-1', $curr_settingID);"
+TBT=(`sqlite3 ~/tbt_database "$cmd"`)	
+
+#get most current sessionid 
+cmd1="SELECT MAX(SessionID) FROM TaskSession;"
+TBT1=(`sqlite3 ~/tbt_database "$cmd1"`)	
+out="${TBT1[0]}"
+
+#record wave file 
+timeout 50 rec -V1 -c 1 -r 48000 $uniepoch.wav sinc 80 gain -l $gain_db
+#move file
+mv $uniepoch.wav IAudioIn/$uniepoch.wav
+filepath=IAudioIn/$uniepoch.wav
+echo $filepath
+
+#start index calculation
+python ~/ThinkBioT/AcousticIndices/tbt_indexprocess.py --indiciesfile $filepath --taskSessionId $out --epochtime $uniepoch
+	
+

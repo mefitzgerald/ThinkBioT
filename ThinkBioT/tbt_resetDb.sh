@@ -26,4 +26,6 @@
 # Get mode information
 
 sudo rm ~/tbt_database
+sudo rm ~/ThinkBioT/AcousticIndices/IAudioIn/*
+sudo rm ~/ThinkBioT/ClassProcess/CSpectrograms/*
 python3 tbt_DB_Ini.py

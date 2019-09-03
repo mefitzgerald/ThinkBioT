@@ -22,6 +22,7 @@
 import argparse
 import os
 import glob
+import time
 import re
 import sqlite3
 from pathlib import Path
@@ -45,19 +46,18 @@ def main():
     parser.add_argument('--taskSessionId', help='taskSessionId number.', required=True)
     parser.add_argument('--epochtime', help='time sample captured.', required=True)
     args = parser.parse_args()
-    print(args.taskSessionId)
-    print(args.epochtime)
     # Get labels file   
-    os.chdir(os.getcwd())
+    #os.chdir(os.getcwd())
+    os.chdir('/home/pi/ThinkBioT/ClassProcess/CModel')
     for label_file in glob.glob("*.txt"):
-        print(label_file)       
+        print("LabelFile: " +label_file)       
     # Prepare labels.
     labels = ReadLabelFile(label_file)
-    # Get labels file   
-    os.chdir(os.getcwd())
-    for model_file in glob.glob("*.tflite"):
-        print(model_file)       
+    # Get model file   
+    for model_file in glob.glob("*.tflite"):       
+        print("Model File: " + model_file)       
     # Initialize engine.
+    time.sleep( 5 )
     engine = ClassificationEngine(model_file)
     # Prepare database connector & cursor
     try:
@@ -83,5 +83,6 @@ def main():
 if __name__ == '__main__':
     main()
 
+# to test python3 auto_classify_spect.py --taskSessionId 1 --epochtime "5566"
 
 
