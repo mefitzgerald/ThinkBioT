@@ -1,7 +1,6 @@
-[ -z $BASH ] && { exec bash "$0" "$@" || exit; }
-#!/bin/bash
-# to run use sh tbt_reserDb.sh
-#
+#!/usr/bin/env python
+
+"""
 # LICENSE:
 # ThinkBioT is an Bioacoustic sensor framework for the collection, processing
 # and satellite transmission of Bio-Taxa Classification and Acoustic Indicies data.
@@ -22,8 +21,35 @@
 # 
 # SUPPORT:
 # https://github.com/mefitzgerald/ThinkBioT/issues
-#
-# Get mode information
+"""
 
-sudo rm ~/tbt_database
-python3 tbt_DB_Ini.py
+import sqlite3
+import sys
+import time
+
+sys.path.append('/home/pi/pyRockBlock')
+import rockBlock
+from rockBlock import rockBlockProtocol
+ 
+class MoExample (rockBlockProtocol):
+    
+    def main(self):
+      
+        rb = rockBlock.rockBlock("/dev/ttyUSB0", self)
+        
+        rb.sendMessage("Hello World RockBLOCK!")      
+        
+	rb.close()
+        
+    def rockBlockTxStarted(self):
+        print "rockBlockTxStarted"
+        
+    def rockBlockTxFailed(self):
+        print "rockBlockTxFailed"
+        
+    def rockBlockTxSuccess(self,momsn):
+        print "rockBlockTxSuccess " + str(momsn)
+        
+if __name__ == '__main__':
+    MoExample().main()
+

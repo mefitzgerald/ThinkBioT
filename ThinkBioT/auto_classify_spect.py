@@ -23,6 +23,7 @@ import argparse
 import os
 import glob
 import time
+import datetime
 import re
 import sqlite3
 from pathlib import Path
@@ -78,7 +79,18 @@ def main():
             print('Score : ', result[1])
             c.execute("INSERT INTO ClassTasks(ClassTaskTime, ClassTaskSourceFile, ClassTaskResult, ClassTaskPercent, SessionID) VALUES(?,?,?,?,?)", (args.epochtime, path_in_str, labels[result[0]], str(result[1]), args.taskSessionId))
             conn.commit()
+            #Remove processed file
+        os.remove(path_in_str)
     conn.close()
+    
+    #Record Completion in Log
+    
+    f= open("/home/pi/ThinkBioT/tbt_log.txt","a+")
+    f.write("Completed Classification at : " + str(datetime.datetime.now()) + "\n")
+    f.close()
+    
+    #Update to next process
+    os.system('sh /home/pi/ThinkBioT/tbt_update.sh')
         
 if __name__ == '__main__':
     main()

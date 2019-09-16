@@ -1,6 +1,6 @@
 [ -z $BASH ] && { exec bash "$0" "$@" || exit; }
 #!/bin/bash
-# to run use sh tbt_mode_updater.sh
+# to run use sh tbt_update.sh
 #
 # LICENSE:
 # ThinkBioT is an Bioacoustic sensor framework for the collection, processing
@@ -24,7 +24,7 @@
 # https://github.com/mefitzgerald/ThinkBioT/issues
 #
 # Get mode information
-echo "here"
+
 cmd="SELECT * FROM Settings WHERE SettingActive = 1"
 IFS=$'|'
 TBT=(`sqlite3 ~/tbt_database "$cmd"`)
@@ -37,7 +37,11 @@ dusk_capture_time="${TBT[4]}"
 # 1 = Dawn Capture Mode
 # 2 = Dusk Capture Mode
 # 3 = TX Mode
-echo "curr_mode $curr_mode"
+
+# get date for log
+currUnixEpoch=$(date +%s);
+
+echo "In update script, current mode is: $curr_mode"
 # if current mode is DawnCapture
 if [ $curr_mode == 1 ]
 then
@@ -50,14 +54,20 @@ then
 		SET CurrentMode = 3
 		WHERE SettingActive = 1;"
 		TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
-		echo "Setting next mode to TX Mode, shutting down"
+		echo "Setting next mode to TX Mode, shutting down $(date)"
+		sh -c 'echo "Setting next mode to TX Mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+		sleep 4
+		#sudo shutdown
 	else
 		#set next mode to DuskCapture
 		cmd4="UPDATE Settings
 		SET CurrentMode = 2
 		WHERE SettingActive = 1;"
 		TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
-		echo "Setting next mode to DuskCapture, shutting down"
+		echo "Setting next mode to DuskCapture, shutting down $(date)"
+		sh -c 'echo "Setting next mode to DuskCapture, shutting down $(date)"  >> /home/pi/ThinkBioT/tbt_log.txt'
+		sleep 4
+		#sudo shutdown
 	fi
 # if current mode is DuskCapture mode	
 elif [ $curr_mode == 2 ]
@@ -67,19 +77,27 @@ then
 	SET CurrentMode = 3
 	WHERE SettingActive = 1;"
 	TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
-	echo "Setting next mode to TX Mode, shutting down"
+	echo "Setting next mode to TX Mode, shutting down $(date)"
+	sh -c 'echo "Setting next mode to TX Mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+	sleep 4
+	#sudo shutdown
 # if current mode is TX Mode mode
 elif [ $curr_mode == 3 ]
 then	
 	# Next mode is therefore starting the loop again at DawnCapture Mode
-	cmd4="UPDATE Settings
-	SET CurrentMode = 1
-	WHERE SettingActive = 1;"
+	cmd4="UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;"
 	TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
-	echo "Setting next mode to DawnCapture mode, shutting down"
+    #Update database to confirm transmission 
+    cmd5="UPDATE TaskSession SET TransmittedTime = currUnixEpoch WHERE SessionID = $1 "
+	TBT5=(`sqlite3 ~/tbt_database "$cmd5"`)
+	echo "Setting next mode to DawnCapture mode, shutting down $(date)"
+	sh -c 'echo "Setting next mode to DawnCapture mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+	sleep 4
+	#sudo shutdown
 else
 	# Else current mode is 0 (Manual)
-	echo "Manual Mode active"
+	echo "Manual Mode active $(date)"
+    sh -c 'echo "Manual Mode active" $(date) >> /home/pi/ThinkBioT/tbt_log.txt'
 fi	
 
 #manual update if required

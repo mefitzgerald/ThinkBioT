@@ -53,10 +53,10 @@ INSERT INTO Settings 	(SettingName, SettingActive, DawnCaptureTime, DuskCaptureT
 						Tr_Sil_dur, Tr_Sil_dur_perc, Tr_Sil_below_dur, Tr_Sil_below_dur_perc, Tr_Hpfilter, 
 						Tr_Gain, Tr_Wav_length, Tr_Test_Length, Ai_Gain, 
 						CurrentMode, ResearchStartDateTime, ResearchEndDateTime) 
-VALUES ("DEFAULT", 1, 0630, "-1", 2300, 
+VALUES ("DEFAULT", 1, "06:30:00", "-1", "23:00:00", 
 		0.1, 1, 1.0, 1, 80, 
 		6, 5, 300, 6, 
-		0, "-1", "-1");
+		0, "2015-08-01", "2025-07-31");
 
 
 

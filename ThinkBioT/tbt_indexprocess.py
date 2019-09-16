@@ -246,7 +246,11 @@ if __name__ == '__main__':
                 c.execute("INSERT INTO AcousticIndexTasks(IndexTaskTime, IndexTaskType, IndexTaskSource, IndexTaskResult, SessionID) VALUES(?,?,?,?,?)", (args.epochtime, index_cat, args.indiciesfile, value, args.taskSessionId))
                 conn.commit()
     conn.close()
+
+    #Record Completion in Log    
+    f= open("/home/pi/ThinkBioT/tbt_log.txt","a+")
+    f.write("Completed Index Calculations at : " + str(datetime.datetime.now()) + "\n")
+    f.close()
 	
 	#Start classification audio capture
-    #subprocess.call('/home/pi/ThinkBioT/ClassProcess/trecord.sh')
     os.system('sh /home/pi/ThinkBioT/ClassProcess/trecord.sh')

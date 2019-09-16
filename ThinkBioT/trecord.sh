@@ -72,7 +72,7 @@ uniepoch=$(date +"%s")
 
 # timeout sets recoding to time in seconds for 5 minutes
 # timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
-timeout 30 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+timeout 50 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
 #check wavs exist 
 count=`ls -1 *.wav 2>/dev/null | wc -l`
 echo "recorded $count files"
@@ -112,10 +112,12 @@ then
 		if [ $(float_gt_et $filelength 5) == 1 ] ; then
 			outfile="${file%.*}.png"
 			sox -V1 "$file" -n spectrogram -r -o "$outfile"
-			mv "$outfile" ./CSpectrograms
+			mv "$outfile" ~/ThinkBioT/ClassProcess/CSpectrograms
 			echo "spectrogram generated"
 		fi
-		rm $file
+		mv $file ~/ThinkBioT/ClassProcess/CAudioIn/$file
+		# rm $file
+		sleep 1
 	done	
 	#start classification passing the SessionId to the classify script
 	python3 ~/ThinkBioT/ClassProcess/CModel/auto_classify_spect.py --taskSessionId $out --epochtime $uniepoch
