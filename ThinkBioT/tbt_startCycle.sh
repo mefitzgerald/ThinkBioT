@@ -16,10 +16,11 @@ curr_mode="${TBT[15]}"
 if [ $curr_mode == 0 ]
 then
     echo "Manual mode, no cycle required"
+    sh -c 'echo "tbt_startCycle Manual mode, no cycle required $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
 else
     # allow 10 minutes for user to disable cycle if required
     echo "Sleep 10 minutes to allow for cycle disable"
-    sleep 300
+    sleep 600
     echo "Activity resumed"
     
     # reload settings in case user reset mode
@@ -34,25 +35,25 @@ else
     if [ $curr_mode == 1 ]
     then
         echo "Start Dawn Audio Capture $(date)"
-        sh -c 'echo "Start Dawn Audio Capture $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+        sh -c 'echo "tbt_startCycle Start Dawn Audio Capture $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
         sh ~/ThinkBioT/AcousticIndices/arecord.sh
     # if current mode is DuskCapture mode
     elif [ $curr_mode == 2 ]
     then
         echo "Start Dawn Audio Capture $(date)"
-        sh -c 'echo "Start Dawn Audio Capture $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+        sh -c 'echo "tbt_startCycle Start Dawn Audio Capture $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
         sh ~/ThinkBioT/AcousticIndices/arecord.sh
     # if current mode is TX Mode mode
     elif [ $curr_mode == 3 ]
     then
         echo "Start Transmission $(date)"
-        sh -c 'echo "Start Transmission $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'    
+        sh -c 'echo "tbt_startCycle Start Transmission $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'    
         python ~/ThinkBioT/tbt_transmitRes.py 
         
     else
         # Else current mode is 0 (Manual)
         echo "Manual Mode active"
-        sh -c 'echo "Manual Mode active no Cycle $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+        sh -c 'echo "tbt_startCycle Manual Mode active no Cycle $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
     fi
 fi
     

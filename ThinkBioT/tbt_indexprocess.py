@@ -35,6 +35,7 @@ import csv
 import yaml
 import argparse
 import sqlite3
+import datetime
 import subprocess
 import os
 
@@ -249,7 +250,7 @@ if __name__ == '__main__':
 
     #Record Completion in Log    
     f= open("/home/pi/ThinkBioT/tbt_log.txt","a+")
-    f.write("Completed Index Calculations at : " + str(datetime.datetime.now()) + "\n")
+    f.write("tbt_indexprocess Completed Index Calculations at : " + str(datetime.datetime.now()) + "\n")
     f.close()
 	
 	#Start classification audio capture

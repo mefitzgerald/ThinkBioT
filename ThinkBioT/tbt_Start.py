@@ -32,7 +32,7 @@ def main():
     f= open("/home/pi/ThinkBioT/tbt_log.txt","a+")
     f.write("tbt_Start Run at: " + str(datetime.datetime.now()) + "\n")
     f.close()
-    #os.system('sh /home/pi/ThinkBioT/tbt_startCycle.sh')
+    os.system('sh /home/pi/ThinkBioT/tbt_startCycle.sh')
     
 if __name__== "__main__":
   main()

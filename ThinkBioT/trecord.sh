@@ -67,12 +67,14 @@ echo "1 = Dawn Capture Mode"
 echo "2 = Dusk Capture Mode"
 echo "3 = TX Mode"
 
-# unix epoch time for file name
+# unix epoch time for transmission data
 uniepoch=$(date +"%s")
 
 # timeout sets recoding to time in seconds for 5 minutes
-# timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
-timeout 50 rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+# Optional highpass version
+# timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav highpass $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+
+timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
 #check wavs exist 
 count=`ls -1 *.wav 2>/dev/null | wc -l`
 echo "recorded $count files"
@@ -86,7 +88,9 @@ then
 		if [ $(float_gt $soundlength $Tr_Wav_length) == 1 ] ; then
 			echo "dur > $Tr_Wav_length, soundfile sucessfully split"
 			# split all wav files into files of 5 second durations
-			sox -V1 $i $uniepoch.wav trim 0 $Tr_Wav_length : newfile : restart		
+            file_uniepoch=$(date +"%s")
+			sox -V1 $i $file_uniepoch.wav trim 0 $Tr_Wav_length : newfile : restart	
+            sleep 1
 		else
 			echo "dur < $Tr_Wav_length soundfile discarded"
 		fi
@@ -116,13 +120,17 @@ then
 			echo "spectrogram generated"
 		fi
 		mv $file ~/ThinkBioT/ClassProcess/CAudioIn/$file
-		# rm $file
+		#rm $file
 		sleep 1
 	done	
+    #update log
+    sh -c 'echo "trecord Classification audio samples captured $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
 	#start classification passing the SessionId to the classify script
 	python3 ~/ThinkBioT/ClassProcess/CModel/auto_classify_spect.py --taskSessionId $out --epochtime $uniepoch
 else
 # if no wavs exist to convert to spectrograms set next mode	
+    #update log
+    sh -c 'echo "trecord no samples to prcocess forwatd to update script $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
 	sh ~/ThinkBioT/tbt_update.sh
 fi
 

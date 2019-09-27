@@ -56,6 +56,10 @@ if [ $ERR -eq 0 ]; then
     # Install rasbian packages
     PACKAGES="git sox sqlite3 python-scipy=0.18.1-2 python-numpy=1:1.12.1-3 python-matplotlib git screen usbutils sqlitebrowser"
     apt-get install $PACKAGES -y || ((ERR++))  
+ 
+    # No module found pyyaml workaound
+    easy_install pip || ((ERR++))
+    python -m pip install pyyaml || ((ERR++))
   
     # Install Python packages
     pip install pyyaml==5.1.1 || ((ERR++))
@@ -81,6 +85,7 @@ if [ $ERR -eq 0 ]; then
     chmod +x tbt_resetDb.sh || ((ERR++))
     chmod +x tbt_menu.sh || ((ERR++))
     chmod +x tbt_startCycle.sh || ((ERR++))
+    chmod +x tbt_log.txt || ((ERR++))
     
     echo '>>> Set soundBlaster as default audio device'
     # move .asoundrc audio settings file to home
@@ -98,6 +103,7 @@ if [ $ERR -eq 0 ]; then
     echo '>>> Create ThinkBioT database'
     python3 tbt_DB_Ini.py
     sleep 1
+    
 	#leave in for option to clear db
     #rm tbt_DB_Ini.py 
     #rm tbt_dbSchema.sql

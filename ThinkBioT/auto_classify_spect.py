@@ -28,19 +28,8 @@ import re
 import sqlite3
 from pathlib import Path
 from edgetpu.classification.engine import ClassificationEngine
+from edgetpu.utils import dataset_utils
 from PIL import Image
-
-# Function to read labels from text files.
-def ReadLabelFile(file_path):
-    counter = 0
-    with open(file_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    ret = {}
-    for line in lines:
-        ret[int(counter)] = line.strip()
-        counter = counter + 1
-    return ret
-   
 
 def main():
     parser = argparse.ArgumentParser()
@@ -53,7 +42,7 @@ def main():
     for label_file in glob.glob("*.txt"):
         print("LabelFile: " +label_file)       
     # Prepare labels.
-    labels = ReadLabelFile(label_file)
+    labels = dataset_utils.read_label_file(label_file)
     # Get model file   
     for model_file in glob.glob("*.tflite"):       
         print("Model File: " + model_file)       
@@ -73,7 +62,7 @@ def main():
         path_in_str = str(path)
         print(path_in_str)
         img = Image.open(path_in_str)
-        for result in engine.ClassifyWithImage(img, top_k=3):
+        for result in engine.classify_with_image(img, top_k=3):
             print('---------------------------')
             print(labels[result[0]])
             print('Score : ', result[1])
@@ -83,10 +72,9 @@ def main():
         os.remove(path_in_str)
     conn.close()
     
-    #Record Completion in Log
-    
+    #Record Completion in Log  
     f= open("/home/pi/ThinkBioT/tbt_log.txt","a+")
-    f.write("Completed Classification at : " + str(datetime.datetime.now()) + "\n")
+    f.write("auto_classify_spect Completed Classification at : " + str(datetime.datetime.now()) + "\n")
     f.close()
     
     #Update to next process

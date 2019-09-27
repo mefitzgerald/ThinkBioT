@@ -131,14 +131,14 @@ setHpFilter(){
 setClassGain(){
 	echo "Please enter Classification Gain Level"
 	echo "Default Value: 6"
-	read -p 'Must be in int number format between 0-15 :' setClassGainVar
+	read -p 'Must be in int number format between 0-30 :' setClassGainVar
 	# Check if int
 	if ! [[ $setClassGainVar =~ $REGEX_INT ]] ; then
 		echo 'Please enter a positive integer'
 		pause
 	else
-		if [[ $setClassGainVar -gt 15 ]] ; then
-			echo 'Please select a value between 0-15'
+		if [[ $setClassGainVar -gt 30 ]] ; then
+			echo 'Please select a value between 0-30'
 			pause
 		else
 			# Update database
@@ -175,14 +175,14 @@ setWavLength(){
 setTestLength(){
 	echo "Please enter Classification Recording duration in seconds"
 	echo "Default Value: 300"
-	read -p 'Must be in int number format between 50-1200 :' setTestLengthVar
+	read -p 'Must be in int number format between 50-2400 :' setTestLengthVar
 	# Check if int
 	if ! [[ $setTestLengthVar =~ $REGEX_INT ]] ; then
 		echo 'Please enter a positive integer'
 		pause
 	else
-		if [[ $setTestLengthVar -gt 1200 ]] || [[ $setTestLengthVar -lt 50 ]]  ; then
-			echo 'Please select a value between 50-1200'
+		if [[ $setTestLengthVar -gt 2400 ]] || [[ $setTestLengthVar -lt 50 ]]  ; then
+			echo 'Please select a value between 50-2400'
 			pause
 		else
 			# Update database
@@ -197,14 +197,14 @@ setTestLength(){
 setAiGain(){
 	echo "Please enter Index Gain Level"
 	echo "Default Value: 6"
-	read -p 'Must be in int number format between 0-15 :' setAiGainVar
+	read -p 'Must be in int number format between 0-30 :' setAiGainVar
 	# Check if int
 	if ! [[ $setAiGainVar =~ $REGEX_INT ]] ; then
 		echo 'Please enter a positive integer'
 		pause
 	else
-		if [[ $setAiGainVar -gt 15 ]] ; then
-			echo 'Please select a value between 0-15'
+		if [[ $setAiGainVar -gt 30 ]] ; then
+			echo 'Please select a value between 0-30'
 			pause
 		else
 			# Update database
@@ -339,7 +339,7 @@ show_menus() {
 	echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	echo "1. Enable Schedule Script & set Mode to 1"
 	echo "2. Disable Schedule Script & set Mode to 0"
-	echo "3. Recording settings"
+	echo "3. Audio Capture Settings"
 	echo "4. Factory Reset"
 	echo "5. Manual Record & Process"
 	echo "6. Manual Satellite Transmit"

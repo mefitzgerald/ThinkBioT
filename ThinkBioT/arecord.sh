@@ -56,9 +56,12 @@ out="${TBT1[0]}"
 #record wave file 
 timeout 50 rec -V1 -c 1 -r 48000 $uniepoch.wav sinc 80 gain -l $gain_db
 #move file
-mv $uniepoch.wav IAudioIn/$uniepoch.wav
+mv $uniepoch.wav ~/ThinkBioT/AcousticIndices/IAudioIn/$uniepoch.wav
 filepath=IAudioIn/$uniepoch.wav
 echo $filepath
+
+#update log
+sh -c 'echo "arecord Index audio sample captured $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
 
 #start index calculation
 python ~/ThinkBioT/AcousticIndices/tbt_indexprocess.py --indiciesfile $filepath --taskSessionId $out --epochtime $uniepoch

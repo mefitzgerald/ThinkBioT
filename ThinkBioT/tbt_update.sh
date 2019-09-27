@@ -38,9 +38,6 @@ dusk_capture_time="${TBT[4]}"
 # 2 = Dusk Capture Mode
 # 3 = TX Mode
 
-# get date for log
-currUnixEpoch=$(date +%s);
-
 echo "In update script, current mode is: $curr_mode"
 # if current mode is DawnCapture
 if [ $curr_mode == 1 ]
@@ -55,9 +52,9 @@ then
 		WHERE SettingActive = 1;"
 		TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
 		echo "Setting next mode to TX Mode, shutting down $(date)"
-		sh -c 'echo "Setting next mode to TX Mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+		sh -c 'echo "tbt_update Setting next mode to TX Mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
 		sleep 4
-		#sudo shutdown
+		sudo shutdown
 	else
 		#set next mode to DuskCapture
 		cmd4="UPDATE Settings
@@ -65,9 +62,9 @@ then
 		WHERE SettingActive = 1;"
 		TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
 		echo "Setting next mode to DuskCapture, shutting down $(date)"
-		sh -c 'echo "Setting next mode to DuskCapture, shutting down $(date)"  >> /home/pi/ThinkBioT/tbt_log.txt'
+		sh -c 'echo "tbt_update Setting next mode to DuskCapture, shutting down $(date)"  >> /home/pi/ThinkBioT/tbt_log.txt'
 		sleep 4
-		#sudo shutdown
+		sudo shutdown
 	fi
 # if current mode is DuskCapture mode	
 elif [ $curr_mode == 2 ]
@@ -78,26 +75,40 @@ then
 	WHERE SettingActive = 1;"
 	TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
 	echo "Setting next mode to TX Mode, shutting down $(date)"
-	sh -c 'echo "Setting next mode to TX Mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+	sh -c 'echo "tbt_update Setting next mode to TX Mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
 	sleep 4
-	#sudo shutdown
+	sudo shutdown
 # if current mode is TX Mode mode
 elif [ $curr_mode == 3 ]
-then	
-	# Next mode is therefore starting the loop again at DawnCapture Mode
-	cmd4="UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;"
-	TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	
-    #Update database to confirm transmission 
-    cmd5="UPDATE TaskSession SET TransmittedTime = currUnixEpoch WHERE SessionID = $1 "
-	TBT5=(`sqlite3 ~/tbt_database "$cmd5"`)
-	echo "Setting next mode to DawnCapture mode, shutting down $(date)"
-	sh -c 'echo "Setting next mode to DawnCapture mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
-	sleep 4
-	#sudo shutdown
+then
+    # Next mode is therefore starting the loop again at DawnCapture Mode
+    cmd4="UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;"
+    TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	 
+    # If result args from tbt_transmit is 200 (ok)
+    if [ $1 == 200 ]
+        then
+        # Get session ID
+        cmd5="SELECT MAX(SessionID) FROM TaskSession WHERE TransmittedTime = '-1';"
+        TBT5=(`sqlite3 ~/tbt_database "$cmd5"`)	
+        sessionIdtoUpdate="${TBT5[0]}"       
+        # Update Session in database to confirm transmission (not transmitted = -1, transmitted = unixepoch)
+        cmd6="UPDATE TaskSession SET TransmittedTime = $(date +%s) WHERE SessionID = $sessionIdtoUpdate "
+        TBT6=(`sqlite3 ~/tbt_database "$cmd6"`)
+        echo "$sessionIdtoUpdate"
+        echo "tbt_update Transmission Success, database TaskSession : $sessionIdtoUpdate uploaded $(date)"
+        sh -c 'echo "tbt_update Transmission Success, database TaskSession : $sessionIdtoUpdate uploaded $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+    else
+        echo "tbt_update Transmission Fail, database TaskSession not uploaded $(date)"
+        sh -c 'echo "tbt_update Transmission Fail, database TaskSession not uploaded $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'    
+    fi
+    echo "Setting next mode to DawnCapture mode, shutting down $(date)"
+    sh -c 'echo "tbt_update Setting next mode to DawnCapture mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+    sleep 4
+    sudo shutdown
 else
 	# Else current mode is 0 (Manual)
 	echo "Manual Mode active $(date)"
-    sh -c 'echo "Manual Mode active" $(date) >> /home/pi/ThinkBioT/tbt_log.txt'
+    sh -c 'echo "tbt_update Manual Mode active" $(date) >> /home/pi/ThinkBioT/tbt_log.txt'
 fi	
 
 #manual update if required
