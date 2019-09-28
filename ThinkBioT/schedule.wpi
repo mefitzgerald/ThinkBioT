@@ -1,13 +1,14 @@
 ###### Dawn Capture (its called dawn but it is just the first capture time)
-# Turn on Raspberry Pi at 16:00, turn it off at 17:00 for first capture (aka dawn)
+# Turn on Raspberry Pi at 18:00, turn it off at 17:00 for first capture (aka dawn)
 ###### Transmission
-# Turn on again at 23:00, turn it off at 00:00
+# Turn on again at 22:00, turn it off at 23:00
 # Repeat above everyday
+# Dates format YYYY-MM-DD
 
-BEGIN	2015-08-01 16:00:00	# starts at 16:00
-END	2025-07-31 23:59:59
-ON	H1		# keep ON state for 1 hour  (until 17:00)
-OFF	H6		# keep OFF state for 6 hours  (until 23:00)
-ON	H1		# keep ON state for 1 hour  (until 00:00)
-OFF	H16		# keep OFF state for 16 hours (until 17:00 next day)
+BEGIN 2019-09-27 22:00:00
+END   2019-10-09 21:59:00
+ON    H1 WAIT
+OFF   H7
+ON    H1 WAIT
+OFF   H15
 
