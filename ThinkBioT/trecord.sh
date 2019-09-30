@@ -70,11 +70,10 @@ echo "3 = TX Mode"
 # unix epoch time for transmission data
 uniepoch=$(date +"%s")
 
-# timeout sets recoding to time in seconds for 5 minutes
-# Optional highpass version
-# timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav highpass $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
-
-timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart gain −l $Tr_Gain
+# New approach, record 5 minute wav file then silence then split
+timeout $Tr_Test_Length rec -V1 -c 1 -r 48000 session.wav sinc 80 gain -l $Tr_Gain
+sox session.wav raw.wav sinc $Tr_Hpfilter silence 1 $Tr_Sil_dur $Tr_Sil_dur_perc% 1 $Tr_Sil_below_dur $Tr_Sil_below_dur_perc% : newfile : restart
+rm session.wav # not required as original data is split into 5 second sections
 #check wavs exist 
 count=`ls -1 *.wav 2>/dev/null | wc -l`
 echo "recorded $count files"

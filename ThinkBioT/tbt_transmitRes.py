@@ -73,7 +73,13 @@ class Tbt_RbTX (rockBlockProtocol):
         # Ensure there is a session to transmit 
         if tx_sessionID is not None:
             # Set up rockblock
-            # rb = rockBlock.rockBlock("/dev/ttyUSB0", self)
+            #rb = rockBlock.rockBlock("/dev/ttyUSB0", self)
+            
+            #Get Capture Time
+            c.execute('SELECT IndexTaskTime FROM AcousticIndexTasks WHERE IndexTaskType = ? AND SessionID = ?', ('Acoustic_Complexity_Index median', tx_sessionID,) )
+            cap_time = c.fetchone()
+            tx_captime = str(cap_time[0])
+            print("Capture time " + tx_captime)
             
             #Get ACI
             c.execute('SELECT IndexTaskResult FROM AcousticIndexTasks WHERE IndexTaskType = ? AND SessionID = ?', ('Acoustic_Complexity_Index median', tx_sessionID,) )
@@ -148,7 +154,7 @@ class Tbt_RbTX (rockBlockProtocol):
             # This format would be used with gps add-on
             # msg = str(epochtime) +"," + tx_aci +"," + tx_adi + "," + tx_aei + "," + tx_bi + "," + tx_ndsi + "," + str(tx_speciesCount) + "," + str(tx_samplesCount) + "," + str(tx_alertCount) + "," + tx_latitude + "," + tx_longitude + "," + tx_elevation + ","
             # This format would be used with no location
-            msg = str(epochtime) +"," + tx_aci +"," + tx_adi + "," + tx_aei + "," + tx_bi + "," + tx_ndsi + "," + str(tx_speciesCount) + "," + str(tx_samplesCount) + "," + " 1" + ", 0,,,"
+            msg = tx_captime + "," + tx_aci +"," + tx_adi + "," + tx_aei + "," + tx_bi + "," + tx_ndsi + "," + str(tx_speciesCount) + "," + str(tx_samplesCount) + "," + str(tx_alertCount) + ", 0,,,"
             print(msg)
             c.close()    
             #rb.sendMessage(msg)

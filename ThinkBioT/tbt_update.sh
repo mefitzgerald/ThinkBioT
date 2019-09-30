@@ -80,10 +80,7 @@ then
 	sudo shutdown
 # if current mode is TX Mode mode
 elif [ $curr_mode == 3 ]
-then
-    # Next mode is therefore starting the loop again at DawnCapture Mode
-    cmd4="UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;"
-    TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	 
+then 
     # If result args from tbt_transmit is 200 (ok)
     if [ $1 == 200 ]
         then
@@ -97,14 +94,37 @@ then
         echo "$sessionIdtoUpdate"
         echo "tbt_update Transmission Success, database TaskSession : $sessionIdtoUpdate uploaded $(date)"
         sh -c 'echo "tbt_update Transmission Success, database TaskSession : $sessionIdtoUpdate uploaded $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+        # Check if there are any taskSessions not uploaded
+        checkCmd="SELECT MAX(SessionID) 
+        FROM TaskSession 
+        WHERE TransmittedTime = -1;"
+		TBTCheckRes=(`sqlite3 ~/tbt_database "$checkCmd"`)	
+        echo "TBTCheckRes:"
+        echo "$TBTCheckRes"
+        if [ -z "$TBTCheckRes" ] #check if result is null if so then...
+        then  
+            echo "tbt_update All sessions uploaded, Setting next mode to DawnCapture mode, shutting down $(date)"
+            sh -c 'echo "tbt_update All sessions uploaded, tbt_update Setting next mode to DawnCapture mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
+            # Next mode is therefore starting the loop again at DawnCapture Mode
+            cmd4="UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;"
+            TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	           
+            sleep 4
+            sudo shutdown
+        else
+            #sleep for 5 minutes to let the capacitor charge build
+            echo "Sleeping to charge modem"
+            sleep 150
+            echo "Beginning transmission of missed session"
+            sh -c 'echo "tbt_update Beginning transmission of missed session $(date)"  >> /home/pi/ThinkBioT/tbt_log.txt'   
+            python ~/ThinkBioT/tbt_transmitRes.py
+        fi
     else
         echo "tbt_update Transmission Fail, database TaskSession not uploaded $(date)"
-        sh -c 'echo "tbt_update Transmission Fail, database TaskSession not uploaded $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'    
+        sh -c 'echo "tbt_update Transmission Fail, database TaskSession not uploaded $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'  
+        # Next mode is therefore starting the loop again at DawnCapture Mode
+        cmd4="UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;"
+        TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	        
     fi
-    echo "Setting next mode to DawnCapture mode, shutting down $(date)"
-    sh -c 'echo "tbt_update Setting next mode to DawnCapture mode, shutting down $(date)" >> /home/pi/ThinkBioT/tbt_log.txt'
-    sleep 4
-    sudo shutdown
 else
 	# Else current mode is 0 (Manual)
 	echo "Manual Mode active $(date)"
