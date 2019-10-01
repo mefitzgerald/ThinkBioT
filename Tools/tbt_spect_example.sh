@@ -22,7 +22,9 @@
 # https://github.com/mefitzgerald/ThinkBioT/issues
 
 # === INSTRUCTIONS ===
+# drop in a folder containing wav files, and run with the command below.
 # to run use ./tbt_spect_example.sh or sh tbt_spect_example.sh or bash ./tbt_spect_example.sh
+# 
 
 # === DEPENDECIES ===
 # sox : http://sox.sourceforge.net/
