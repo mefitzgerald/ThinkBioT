@@ -31,6 +31,25 @@ from edgetpu.classification.engine import ClassificationEngine
 from edgetpu.utils import dataset_utils
 from PIL import Image
 
+# Function to read labels from text files.
+def ReadLabelFile(file_path):
+    """Reads labels from text file and store it in a dict.
+    Each line in the file contains id and description separted by colon or space.
+    Example: '0:cat' or '0 cat'.
+    Args:
+      file_path: String, path to the label file.
+    Returns:
+      Dict of (int, string) which maps label id to description.
+    """
+    counter = 0
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    ret = {}
+    for line in lines:
+        ret[int(counter)] = line.strip()
+        counter = counter + 1
+    return ret
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--taskSessionId', help='taskSessionId number.', required=True)
@@ -42,7 +61,7 @@ def main():
     for label_file in glob.glob("*.txt"):
         print("LabelFile: " +label_file)       
     # Prepare labels.
-    labels = dataset_utils.read_label_file(label_file)
+    labels = ReadLabelFile(label_file)
     # Get model file   
     for model_file in glob.glob("*.tflite"):       
         print("Model File: " + model_file)       
@@ -62,7 +81,8 @@ def main():
         path_in_str = str(path)
         print(path_in_str)
         img = Image.open(path_in_str)
-        for result in engine.classify_with_image(img, top_k=3):
+        #for result in engine.classify_with_image(img, top_k=10):
+        for result in engine.classify_with_image(img, threshold=0.001, top_k=1, resample=0):
             print('---------------------------')
             print(labels[result[0]])
             print('Score : ', result[1])

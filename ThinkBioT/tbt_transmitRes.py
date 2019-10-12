@@ -157,10 +157,10 @@ class Tbt_RbTX (rockBlockProtocol):
             msg = tx_captime + "," + tx_aci +"," + tx_adi + "," + tx_aei + "," + tx_bi + "," + tx_ndsi + "," + str(tx_speciesCount) + "," + str(tx_samplesCount) + "," + str(tx_alertCount) + ", 0,,,"
             print(msg)
             c.close()    
-            #rb.sendMessage(msg)
-            #rb.close()
-            txUpdatesystem() #test sucess
-            # txUpdatesystemfail()  #test fail
+            if rb.sendMessage(msg) is not True:
+                txUpdatesystemfail()                    
+            rb.close()
+
         else:
             txUpdatesystemfail()  #test fail
         
@@ -169,7 +169,6 @@ class Tbt_RbTX (rockBlockProtocol):
             
     def rockBlockTxFailed(self):
         print ("rockBlockTxFailed")
-        txUpdatesystemfail()
             
     def rockBlockTxSuccess(self,momsn):
         print ("rockBlockTxSuccess " + str(momsn))  

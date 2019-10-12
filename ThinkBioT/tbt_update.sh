@@ -109,7 +109,6 @@ then
             cmd4="UPDATE Settings SET CurrentMode = 1 WHERE SettingActive = 1;"
             TBT4=(`sqlite3 ~/tbt_database "$cmd4"`)	           
             sleep 4
-            sudo shutdown
         else
             #sleep for 5 minutes to let the capacitor charge build
             echo "Sleeping to charge modem"

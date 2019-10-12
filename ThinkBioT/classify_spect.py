@@ -17,9 +17,9 @@
 # To run classification with demo model
 """
 python3 classify_spect.py \
---model edgetpu-tflite_edgetpu_model.tflite \
---label edgetpu-tflite_dict.txt \
---image Sonus.png
+--model models_edge_ICN844046509558694159_2019-10-01_08-45-12-857_edgetpu-tflite_edgetpu_model.tflite \
+--label models_edge_ICN844046509558694159_2019-10-01_08-45-12-857_edgetpu-tflite_dict.txt \
+--image cricket.png
 """
 
 import argparse

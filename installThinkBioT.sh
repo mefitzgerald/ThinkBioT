@@ -46,7 +46,7 @@ echo '==========================================================================
 # install ThinkBioT test
 if [ $ERR -eq 0 ]; then
   echo '>>> Install ThinkBioT'
-  if [ -d "ThinkBioT2" ]; then
+  if [ -d "ThinkBioT" ]; then
     echo 'ThinkBioT is installed already, skip this step.'
   else
     echo '>>> Making Directory'
